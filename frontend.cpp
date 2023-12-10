@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "diff/diff.h"
-#include "diff/recursive_down.h"
-#include "diff/deff_dump.h"
+#include "diff_project/diff.h"
+#include "diff_project/recursive_down.h"
+#include "diff_project/deff_dump.h"
 
 
 

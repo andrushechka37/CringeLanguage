@@ -16,15 +16,15 @@ CXXFLAGS =  -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-
 .PHONY: tree
 akinator: tree.o deff_dump.o diff.o recursive_down.o frontend.o
 	clang++ tree.o deff_dump.o diff.o recursive_down.o frontend.o $(CXXFLAGS) -o deff && ./deff
-deff_dump.o: diff/deff_dump.cpp diff/deff_dump.h diff/tree.h
+deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tree.h
 	clang++ -c diff/deff_dump.cpp
 
-tree.o: diff/tree.cpp diff/tree.h
-	clang++ -c diff/tree.cpp
+tree.o: diff_project/tree.cpp diff_project/tree.h
+	clang++ -c diff_project/tree.cpp
 
-diff.o: diff/diff.cpp diff/diff.h diff/tree.h
-	clang++ -c diff/diff.cpp
-recursive_down.o: diff/recursive_down.cpp diff/recursive_down.h
-	clang++ -c diff/recursive_down.cpp
-frontend.o: frontend.cpp diff/recursive_down.h diff/diff.cpp diff/diff.h diff/tree.h
+diff.o: diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
+	clang++ -c diff_project/diff.cpp
+recursive_down.o: diff_project/recursive_down.cpp diff_project/recursive_down.h
+	clang++ -c diff_project/recursive_down.cpp
+frontend.o: frontend.cpp diff_project/recursive_down.h diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
 	clang++ -c frontend.cpp
