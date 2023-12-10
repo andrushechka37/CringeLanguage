@@ -14,15 +14,17 @@ CXXFLAGS =  -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-
 
 
 .PHONY: tree
-akinator: tree.o deff_dump.o diff.o recursive_down.o
-	clang++ tree.o deff_dump.o diff.o recursive_down.o $(CXXFLAGS) -o deff && ./deff
-deff_dump.o: deff_dump.cpp deff_dump.h tree.h
-	clang++ -c deff_dump.cpp
+akinator: tree.o deff_dump.o diff.o recursive_down.o frontend.o
+	clang++ tree.o deff_dump.o diff.o recursive_down.o frontend.o $(CXXFLAGS) -o deff && ./deff
+deff_dump.o: diff/deff_dump.cpp diff/deff_dump.h diff/tree.h
+	clang++ -c diff/deff_dump.cpp
 
-tree.o: tree.cpp tree.h
-	clang++ -c tree.cpp
+tree.o: diff/tree.cpp diff/tree.h
+	clang++ -c diff/tree.cpp
 
-diff.o: diff.cpp diff.h tree.h
-	clang++ -c diff.cpp
-recursive_down.o: recursive_down.cpp recursive_down.h
-	clang++ -c recursive_down.cpp
+diff.o: diff/diff.cpp diff/diff.h diff/tree.h
+	clang++ -c diff/diff.cpp
+recursive_down.o: diff/recursive_down.cpp diff/recursive_down.h
+	clang++ -c diff/recursive_down.cpp
+frontend.o: frontend.cpp diff/recursive_down.h diff/diff.cpp diff/diff.h diff/tree.h
+	clang++ -c frontend.cpp
