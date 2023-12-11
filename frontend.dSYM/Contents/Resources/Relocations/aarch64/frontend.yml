@@ -1,0 +1,34 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/anzhiday/Documents/Cringe/frontend'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: __Z19parse_str_lexicallyi, symObjAddr: 0x0, symBinAddr: 0x1000027F0, symSize: 0x258 }
+  - { offsetInCU: 0x52, offset: 0x52, size: 0x8, addend: 0x0, symName: _op_names_numbers, symObjAddr: 0x1518, symBinAddr: 0x100008008, symSize: 0x0 }
+  - { offsetInCU: 0xDE, offset: 0xDE, size: 0x8, addend: 0x0, symName: _program, symObjAddr: 0x1510, symBinAddr: 0x100008000, symSize: 0x0 }
+  - { offsetInCU: 0xF8, offset: 0xF8, size: 0x8, addend: 0x0, symName: _error_status, symObjAddr: 0x1638, symBinAddr: 0x100008128, symSize: 0x0 }
+  - { offsetInCU: 0x4CB, offset: 0x4CB, size: 0x8, addend: 0x0, symName: __Z19parse_str_lexicallyi, symObjAddr: 0x0, symBinAddr: 0x1000027F0, symSize: 0x258 }
+  - { offsetInCU: 0x559, offset: 0x559, size: 0x8, addend: 0x0, symName: __Z7isdigiti, symObjAddr: 0x258, symBinAddr: 0x100002A48, symSize: 0x28 }
+  - { offsetInCU: 0x585, offset: 0x585, size: 0x8, addend: 0x0, symName: __ZL9set_token13types_of_nodedP12element_info, symObjAddr: 0x280, symBinAddr: 0x100002A70, symSize: 0x30 }
+  - { offsetInCU: 0x5C9, offset: 0x5C9, size: 0x8, addend: 0x0, symName: __ZL10get_numberPi, symObjAddr: 0x2B0, symBinAddr: 0x100002AA0, symSize: 0xC8 }
+  - { offsetInCU: 0x603, offset: 0x603, size: 0x8, addend: 0x0, symName: __Z7isalphai, symObjAddr: 0x378, symBinAddr: 0x100002B68, symSize: 0x28 }
+  - { offsetInCU: 0x62F, offset: 0x62F, size: 0x8, addend: 0x0, symName: __ZL13get_long_namePiPc, symObjAddr: 0x3A0, symBinAddr: 0x100002B90, symSize: 0xD0 }
+  - { offsetInCU: 0x673, offset: 0x673, size: 0x8, addend: 0x0, symName: __Z21get_op_number_long_opPc, symObjAddr: 0x470, symBinAddr: 0x100002C60, symSize: 0xB0 }
+  - { offsetInCU: 0x6AD, offset: 0x6AD, size: 0x8, addend: 0x0, symName: __Z23get_op_number_single_opc, symObjAddr: 0x520, symBinAddr: 0x100002D10, symSize: 0xA0 }
+  - { offsetInCU: 0x6E7, offset: 0x6E7, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x5C0, symBinAddr: 0x100002DB0, symSize: 0x38 }
+  - { offsetInCU: 0x71D, offset: 0x71D, size: 0x8, addend: 0x0, symName: __Z12read_programPc, symObjAddr: 0x5F8, symBinAddr: 0x100002DE8, symSize: 0x78 }
+  - { offsetInCU: 0x765, offset: 0x765, size: 0x8, addend: 0x0, symName: __ZL16get_size_of_fileP7__sFILE, symObjAddr: 0x670, symBinAddr: 0x100002E60, symSize: 0x34 }
+  - { offsetInCU: 0x79F, offset: 0x79F, size: 0x8, addend: 0x0, symName: __Z9node_ctord13types_of_nodeP17diff_tree_elementS1_S1_, symObjAddr: 0x6A4, symBinAddr: 0x100002E94, symSize: 0xD4 }
+  - { offsetInCU: 0x811, offset: 0x811, size: 0x8, addend: 0x0, symName: __ZL17get_op_arg_number10operations, symObjAddr: 0x778, symBinAddr: 0x100002F68, symSize: 0x7C }
+  - { offsetInCU: 0x84E, offset: 0x84E, size: 0x8, addend: 0x0, symName: __Z9tree_ctorP9diff_tree, symObjAddr: 0x7F4, symBinAddr: 0x100002FE4, symSize: 0x50 }
+  - { offsetInCU: 0x87A, offset: 0x87A, size: 0x8, addend: 0x0, symName: __Z13get_op_symboli, symObjAddr: 0x844, symBinAddr: 0x100003034, symSize: 0x7C }
+  - { offsetInCU: 0x8B4, offset: 0x8B4, size: 0x8, addend: 0x0, symName: __Z11tree_verifyP17diff_tree_element, symObjAddr: 0x8C0, symBinAddr: 0x1000030B0, symSize: 0x2B0 }
+  - { offsetInCU: 0x8E0, offset: 0x8E0, size: 0x8, addend: 0x0, symName: __Z11op_prioritydd, symObjAddr: 0xB70, symBinAddr: 0x100003360, symSize: 0x6C }
+  - { offsetInCU: 0x91D, offset: 0x91D, size: 0x8, addend: 0x0, symName: __Z25print_tex_single_equationP17diff_tree_elementP7__sFILE, symObjAddr: 0xBDC, symBinAddr: 0x1000033CC, symSize: 0x380 }
+  - { offsetInCU: 0x965, offset: 0x965, size: 0x8, addend: 0x0, symName: __Z9print_texP17diff_tree_elementPc, symObjAddr: 0xF5C, symBinAddr: 0x10000374C, symSize: 0x9C }
+  - { offsetInCU: 0x9B1, offset: 0x9B1, size: 0x8, addend: 0x0, symName: __Z9tree_dtorPP17diff_tree_element, symObjAddr: 0xFF8, symBinAddr: 0x1000037E8, symSize: 0xA8 }
+  - { offsetInCU: 0x9DB, offset: 0x9DB, size: 0x8, addend: 0x0, symName: __ZL18set_type_and_valued13types_of_nodeP17diff_tree_element, symObjAddr: 0x10A0, symBinAddr: 0x100003890, symSize: 0xC8 }
+  - { offsetInCU: 0xA27, offset: 0xA27, size: 0x8, addend: 0x0, symName: __Z9tree_evalP17diff_tree_elementd, symObjAddr: 0x1168, symBinAddr: 0x100003958, symSize: 0x1E8 }
+  - { offsetInCU: 0xA82, offset: 0xA82, size: 0x8, addend: 0x0, symName: __Z9__isctypeim, symObjAddr: 0x13E0, symBinAddr: 0x100003BD0, symSize: 0x80 }
+  - { offsetInCU: 0xABC, offset: 0xABC, size: 0x8, addend: 0x0, symName: __Z8__istypeim, symObjAddr: 0x1460, symBinAddr: 0x100003C50, symSize: 0x8C }
+  - { offsetInCU: 0xAF6, offset: 0xAF6, size: 0x8, addend: 0x0, symName: __Z7isasciii, symObjAddr: 0x14EC, symBinAddr: 0x100003CDC, symSize: 0x24 }
+...

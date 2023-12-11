@@ -17,14 +17,14 @@ CXXFLAGS =  -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-
 akinator: tree.o deff_dump.o diff.o recursive_down.o frontend.o
 	clang++ tree.o deff_dump.o diff.o recursive_down.o frontend.o $(CXXFLAGS) -o deff && ./deff
 deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tree.h
-	clang++ -c diff/deff_dump.cpp
+	clang++ -c diff_project/deff_dump.cpp
 
 tree.o: diff_project/tree.cpp diff_project/tree.h
 	clang++ -c diff_project/tree.cpp
 
 diff.o: diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
 	clang++ -c diff_project/diff.cpp
-recursive_down.o: diff_project/recursive_down.cpp diff_project/recursive_down.h
-	clang++ -c diff_project/recursive_down.cpp
-frontend.o: frontend.cpp diff_project/recursive_down.h diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
+recursive_down.o: recursive_down.cpp recursive_down.h
+	clang++ -c recursive_down.cpp
+frontend.o: frontend.cpp recursive_down.h diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
 	clang++ -c frontend.cpp

@@ -9,14 +9,18 @@ static int set_type_and_value(double value, types_of_node type, diff_tree_elemen
 static int get_op_arg_number(operations op);
 
 op_names_numbers_t op_names_numbers[OP_COUNT] = {
-        {OP_ADD, "+",       2},
-        {OP_SUB, "-",       2},
-        {OP_MUL, "*",       2},
-        {OP_DIV, "/",       2},
-        {OP_SQRT, "sqrt",   1},
-        {OP_SIN, "sin",     1},
-        {OP_COS, "cos",     1},
-        {OP_POW, "^",       2}
+        {OP_ADD,     "+",       2},
+        {OP_SUB,     "-",       2},
+        {OP_MUL,     "*",       2},
+        {OP_DIV,     "/",       2},
+        {OP_SQRT, "sqrt",       1},
+        {OP_SIN,   "sin",       1},
+        {OP_COS,   "cos",       1},
+        {OP_POW,     "^",       2},
+        {OP_FIG_C,   "}",       0},
+        {OP_FIG_O,   "{",       0},
+        {OP_ROUND_O, "(",       0},
+        {OP_ROUND_O, ")",       0},
 };
 
 diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_element * left,
@@ -53,7 +57,7 @@ const char * get_op_symbol(int op_num) {
     return op_names_numbers[i].name;
 }
 
-int get_op_number(char * name) { // do it faster with hashes instead of strcmp
+int get_op_number(char name[]) { // do it faster with hashes instead of strcmp
     int i = 0;
     while (strcmp(op_names_numbers[i].name, name)) {
         i++;
@@ -110,7 +114,7 @@ static bool check_symbol(char symbol, FILE * pfile) {
     return is_found;
 }
 
-int read_data(diff_tree * tree, char * filename) {
+int read_data(diff_tree * tree, char filename[]) {
     FILE * pfile = fopen(filename, "r");
     IS_NULL_PTR(pfile);
     if (read_node_data(&(tree->root), pfile, &(tree->root)) == 1) {
@@ -224,7 +228,7 @@ void print_tex_single_equation(diff_tree_element * element, FILE * pfile) {
     return;
 }
 
-int print_tex(diff_tree_element * root, char * file_name) {
+int print_tex(diff_tree_element * root, char file_name[]) {
     FILE * pfile = fopen(file_name, "w");
     IS_NULL_PTR(pfile);
     fprintf(pfile, "$$");

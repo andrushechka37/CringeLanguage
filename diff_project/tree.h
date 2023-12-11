@@ -1,8 +1,16 @@
 #pragma once
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++17-extensions"
+
+inline char * program = NULL;
+inline int error_status = 0; 
+
+#pragma clang diagnostic pop
+
 const int OP_NAME_LEN = 10;
-const int OP_COUNT = 8;
-const int FUNCS_COUNT = 8;
+const int OP_COUNT = 12;
+const int FUNCS_COUNT = 12;
 const int OP_PRIORITY_MASK = 240;
 const char NIL = '_';
 
@@ -13,14 +21,18 @@ struct op_names_numbers_t {
 };
 
 enum operations {
-    OP_ADD  = 17,   // 0001|0001     |
-    OP_SUB  = 18,   // 0001|0010     |
-    OP_MUL  = 33,   // 0010|0001     |    =>    elder 4 bits are for operation priority
-    OP_DIV  = 34,   // 0010|0010     |          young 4 bits are for op number
-    OP_SQRT = 49,   // 0011|0001     |
-    OP_SIN  = 50,   // 0011|0010     |
-    OP_COS  = 51,   // 0011|0011     |
-    OP_POW  = 52    // 0011|0100     |
+    OP_ADD     = 17,   // 0001|0001     |
+    OP_SUB     = 18,   // 0001|0010     |
+    OP_MUL     = 33,   // 0010|0001     |    =>    elder 4 bits are for operation priority
+    OP_DIV     = 34,   // 0010|0010     |          young 4 bits are for op number
+    OP_SQRT    = 49,   // 0011|0001     |
+    OP_SIN     = 50,   // 0011|0010     |
+    OP_COS     = 51,   // 0011|0011     |
+    OP_POW     = 52,   // 0011|0100     |
+    OP_FIG_C   = 53,
+    OP_FIG_O   = 54,  
+    OP_ROUND_O = 55,
+    OP_ROUND_C = 56
 };
 
 struct op_info {
@@ -37,8 +49,10 @@ enum types_of_node {
     zero_t     = 0,
     value_t    = 1,
     operator_t = 2,
-    variable_t = 3
+    variable_t = 3,
+    syntax_t   = 4
 };
+
 struct diff_tree_element {
     node_value value;
     types_of_node type;
@@ -99,20 +113,23 @@ int tree_ctor(diff_tree * tree);
 void tree_dtor(elem_ptr * root);
 
 const char * get_op_symbol(int op_num);          // maybe static
-double get_op_number(char op_symbol);
+int get_op_number_single_op(char op_symbol);
 
-int read_node_data(elem_ptr * link, FILE * pfile, elem_ptr * parent);
-int read_data(diff_tree * tree, char * filename = "data.txt");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc++11-compat-deprecated-writable-strings"
 
+int read_data(diff_tree * tree, char filename[] = "data.txt");
+int print_tex(diff_tree_element * root, char file_name[] = "tex.md");
+
+#pragma clang diagnostic pop
 int tree_verify(diff_tree_element * element);
 
 void print_in_pretty_way(diff_tree_element * root);
 void print_tex_single_equation(diff_tree_element * root, FILE * pfile);
 
-int print_tex(diff_tree_element * root, char * file_name = "tex.md");
+
 double tree_eval(diff_tree_element * element, double x_value);
 
-inline int error_status = 0;
 
 #define ELEM_OP_NUM element->value.operator_info.op_number
 #define ELEM_DOUBLE element->value.number

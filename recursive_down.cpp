@@ -1,22 +1,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "diff.h"
+#include "diff_project/diff.h"
 #include "recursive_down.h"
 
 static diff_tree_element * get_subexpression();
 
 static diff_tree_element * get_number() {
     int value = 0;
-    while ('0' <= str[ip] && str[ip] <= '9') {
-        value = value * 10 + str[ip] - '0';
+    while ('0' <= program[ip] && program[ip] <= '9') {
+        value = value * 10 + program[ip] - '0';
         ip++;
     }
     return NUMBER_NODE(value);
 }
 
 static diff_tree_element * get_variable() {
-    if (str[ip] == 'x') {
+    if (program[ip] == 'x') {
         ip++;
         return node_ctor(0, variable_t, NULL, NULL, NULL);
     } else {
@@ -24,11 +24,11 @@ static diff_tree_element * get_variable() {
     }
 }
 static diff_tree_element * get_long_op() {
-    if(('a' <= str[ip] && str[ip] <= 'z' && str[ip] != 'x')) {
+    if(('a' <= program[ip] && program[ip] <= 'z' && program[ip] != 'x')) {
         char op[OP_NAME_LEN] = "";
         int i = 0;
-        while ('a' <= str[ip] && str[ip] <= 'z') { // opname len check 
-            op[i] = str[ip];                        // sscanf
+        while ('a' <= program[ip] && program[ip] <= 'z') { // opname len check 
+            op[i] = program[ip];                        // sscanf
             i++;    
             ip++;
         }
@@ -49,10 +49,10 @@ static diff_tree_element * get_long_op() {
 }
 
 static diff_tree_element * get_bracket() {
-    if (str[ip] == '(') {
+    if (program[ip] == '(') {
         ip++;
         diff_tree_element * value = get_subexpression();
-        if (str[ip] == ')') {
+        if (program[ip] == ')') {
             ip++;
         } else {
             printf("bracket trouble\n");
@@ -65,8 +65,8 @@ static diff_tree_element * get_bracket() {
 
 static diff_tree_element * get_pow() {
     diff_tree_element * value = get_bracket();
-    while (str[ip] == '^') {
-        char op = str[ip++];
+    while (program[ip] == '^') {
+        char op = program[ip++];
         diff_tree_element * value2 = get_bracket();
         value =  POW(value, value2);
     }
@@ -75,8 +75,8 @@ static diff_tree_element * get_pow() {
 
 static diff_tree_element * get_mul_or_div() {   
     diff_tree_element * value = get_pow();
-    while (str[ip] == '*' || str[ip] == '/') {
-        char op = str[ip++];
+    while (program[ip] == '*' || program[ip] == '/') {
+        char op = program[ip++];
         diff_tree_element * value2 = get_pow();
         switch (op)
         {
@@ -96,8 +96,8 @@ static diff_tree_element * get_mul_or_div() {
 
 static diff_tree_element * get_subexpression() {
     diff_tree_element * value = get_mul_or_div();
-    while (str[ip] == '+' || str[ip] == '-') {
-        char op = str[ip++];
+    while (program[ip] == '+' || program[ip] == '-') {
+        char op = program[ip++];
         diff_tree_element * value2 = get_mul_or_div();
         switch (op)
         {
@@ -117,7 +117,7 @@ static diff_tree_element * get_subexpression() {
 
 diff_tree_element * get_expression() {
     diff_tree_element * value = get_subexpression();
-    if (str[ip] == '\0') {
+    if (program[ip] == '\0') {
         return value;
     } else {
         printf("syntax eroooooor");

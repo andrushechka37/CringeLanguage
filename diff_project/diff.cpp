@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <math.h>
 #include "diff.h"
-#include "recursive_down.h"
 #include "deff_dump.h"
 
 static bool is_change = 1;
