@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 
+
 static bool check_symbol(char symbol, FILE * pfile);
 static int set_type_and_value(double value, types_of_node type, diff_tree_element * element);
 static int get_op_arg_number(operations op);
@@ -22,6 +23,19 @@ op_names_numbers_t op_names_numbers[OP_COUNT] = {
         {OP_ROUND_O, "(",       0},
         {OP_ROUND_O, ")",       0},
 };
+
+
+
+int get_op_number_long_op(char name[]) { // do it faster with hashes instead of strcmp
+    int i = 0;
+    while (strcmp(op_names_numbers[i].name, name)) {
+        i++;
+        if (i > FUNCS_COUNT) {
+            return -1;
+        }
+    }
+    return op_names_numbers[i].number;
+}
 
 diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_element * left,
                               diff_tree_element * right, diff_tree_element * parent) {
@@ -45,11 +59,7 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
     
 }
 
-int tree_ctor(diff_tree * tree) {
-    tree->root = node_ctor(0,zero_t, NULL, NULL, NULL);  // it is not null, because
-    tree->size = 0;                                                    // in reader must be not null ptr to write there
-    return 0;              
-}
+
 
 const char * get_op_symbol(int op_num) { 
     int i = 0;
@@ -57,9 +67,9 @@ const char * get_op_symbol(int op_num) {
     return op_names_numbers[i].name;
 }
 
-int get_op_number(char name[]) { // do it faster with hashes instead of strcmp
+int get_op_number_single_op(char name) { // do it faster with hashes instead of strcmp
     int i = 0;
-    while (strcmp(op_names_numbers[i].name, name)) {
+    while (name != op_names_numbers[i].name[0]) {
         i++;
         if (i > FUNCS_COUNT) {
             return -1;
@@ -68,62 +78,8 @@ int get_op_number(char name[]) { // do it faster with hashes instead of strcmp
     return op_names_numbers[i].number;
 }
 
-#define LEFT &((*link)->left)
-#define RIGHT &((*link)->right)
 
-int read_node_data(elem_ptr * link, FILE * pfile, elem_ptr * parent) {  //more clear      // skip probels
-    if (check_symbol('(', pfile) == 1) { // if it is new node or not
-        *link = node_ctor(0, value_t, NULL, NULL, *parent);
-        read_node_data(LEFT, pfile, link);
 
-        double value = 0;                  // error obrabotka
-        char op[OP_NAME_LEN] = {};
-        char x = '0';
-
-        if (fscanf(pfile, "%lf", &value) == 1) {
-            set_type_and_value(value, value_t, *link);
-        } else if(check_symbol('x', pfile) == 1) {
-            set_type_and_value(1, variable_t, *link);
-        } else if (fscanf(pfile, "%[^(]s", &op) == 1) {         // not safe
-            set_type_and_value(get_op_number(op), operator_t, *link);
-        }
-
-        read_node_data(RIGHT, pfile, link);
-        REQUIRE_SYMBOL(')');
-
-    } else if (check_symbol(NIL, pfile) == 1) {
-        return 0;
-    }
-}
-
-#undef LEFT
-#undef RIGHT
-
-static bool check_symbol(char symbol, FILE * pfile) {
-    bool is_found = 1;
-    char check_char = getc(pfile);
-    if (check_char != symbol) {                           
-        ungetc(check_char, pfile);        
-        is_found = 0;                                         
-    } 
-    check_char = getc(pfile);                  
-    if (check_char != '\n') {                            
-        ungetc(check_char, pfile);          
-    }
-    
-    return is_found;
-}
-
-int read_data(diff_tree * tree, char filename[]) {
-    FILE * pfile = fopen(filename, "r");
-    IS_NULL_PTR(pfile);
-    if (read_node_data(&(tree->root), pfile, &(tree->root)) == 1) {
-        fclose(pfile);
-        return 1;
-    }
-    fclose(pfile);
-    return 0;
-}
 
 int tree_verify(diff_tree_element * element) {
     if (element == NULL) {
@@ -176,67 +132,7 @@ bool op_priority(double op1, double op2) {
 }
 
 
-void print_tex_single_equation(diff_tree_element * element, FILE * pfile) {
-    if (element == NULL) {     
-        return;
-    }
-    if (element->value.operator_info.op_number == OP_DIV) {
-        fprintf(pfile, "\\frac{");
-    }
-    if (IS_ROUND_BRACKET) {
-        fprintf(pfile,"(");
-    }
 
-    print_tex_single_equation(element->left, pfile);
-
-    bool is_figure_bracket = 0;
-    if(element->type == value_t) {
-        if (element->value.number < 0) {
-             fprintf(pfile,"(%.2lg)", element->value);
-        } else {
-            fprintf(pfile,"%.2lg", element->value);
-        }
-    } else if (element->type == operator_t) {
-        if ((ELEM_OP_NUM < OP_DIV)) {
-            fprintf(pfile,"%s", get_op_symbol(element->value.operator_info.op_number));
-        } else {
-            is_figure_bracket = 1;
-            switch (element->value.operator_info.op_number) {
-                case OP_POW:
-                    fprintf(pfile,"^{");
-                    break;
-                case OP_DIV:
-                    fprintf(pfile,"}{");
-                    break;
-                default:
-                    fprintf(pfile,"\\%s{", get_op_symbol(element->value.operator_info.op_number));
-            }
-        }
-    } else if ((int)element->type == variable_t) {
-        fprintf(pfile, "x");
-    }
-
-    print_tex_single_equation(element->right, pfile);
-
-    if (IS_ROUND_BRACKET) {
-        fprintf(pfile,")");
-    }
-
-    if (is_figure_bracket == 1) {  // maybe caps for style
-       fprintf(pfile,"}");
-    }
-    return;
-}
-
-int print_tex(diff_tree_element * root, char file_name[]) {
-    FILE * pfile = fopen(file_name, "w");
-    IS_NULL_PTR(pfile);
-    fprintf(pfile, "$$");
-    print_tex_single_equation(root, pfile);
-    fprintf(pfile, "$$");
-    fclose(pfile);
-    return 0;
-}
 
 void tree_dtor(elem_ptr * root) {
     if (*root == NULL) {     
@@ -319,5 +215,3 @@ static int set_type_and_value(double value, types_of_node type, diff_tree_elemen
     element->type = type;
     return 0;
 }
-
-

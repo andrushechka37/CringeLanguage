@@ -9,7 +9,6 @@
 #include <math.h>
 #include <string.h>
 
-int read_program(char file[] = "program.txt");
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem);
@@ -17,28 +16,23 @@ static void set_token(types_of_node type, double value, element_info * elem);
 static void get_long_name(int * ip, char * op);
 static int get_number(int * ip);
 
-#define cur_char program[ip]
-#define create_token(type, value) set_token(type, value, &(parsed_program.tokens[size]))
-
-int get_op_number_long_op(char name[]);
-
-
-
-
-element_info * parse_str_lexically(int len) {
-
-    token_array parsed_program = {};
-    parsed_program.tokens = (element_info *) calloc(len, sizeof(element_info));
+token_array * parse_str_lexically(int len, token_array * parsed_program) {
+    parsed_program->tokens = (element_info *) calloc(len, sizeof(element_info));
 
     int ip = 0;
     int size = 0;
 
     while (cur_char != '\0') {
+        if (cur_char == ' ') {
+            ip++;
+            continue;
+        }
+
         if (isdigit(cur_char) != 0) {
 
             create_token(value_t, get_number(&ip));  // experiment with \n
 
-        } else if (isalpha(cur_char) != 0) {
+        } else if (isalpha(cur_char) != 0) {  // numbers are prohibited in names of funcs and variables
 
             char op[OP_NAME_LEN] = "";
             get_long_name(&ip, op);
@@ -46,8 +40,9 @@ element_info * parse_str_lexically(int len) {
             if (get_op_number_long_op(op) != -1) {
                 create_token(operator_t, get_op_number_long_op(op));
             } else {
-                printf("peremenochka or x\n");
-                continue;
+                // printf("peremenochka or x\n");
+                // continue;
+                create_token(variable_t, 66);
             }
 
         } else {
@@ -65,7 +60,7 @@ element_info * parse_str_lexically(int len) {
                 ip++;
             }
         }
-        printf("%d-type %lg-value\n", parsed_program.tokens[size].type, parsed_program.tokens[size].number);
+        printf("%d-type %lg-value\n", parsed_program->tokens[size].type, parsed_program->tokens[size].number);
         size++;
     }
 }
@@ -73,7 +68,14 @@ element_info * parse_str_lexically(int len) {
 
 int main(void) {
     int len = read_program();
-    element_info * parsed = parse_str_lexically(len);
+    token_array parsed_program = {};
+    parse_str_lexically(len, &parsed_program);
+    int i = 0;
+    printf("--------------------------\n");
+    while(i < 10) {
+        printf("%d-type %lg-value\n", parsed_program.tokens[i].type, parsed_program.tokens[i].number);
+        i++;
+    }
     // diff_tree_element * tree = get_expression();
     // set_parents(tree, tree);
     // tree_visualize(tree);
