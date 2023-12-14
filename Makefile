@@ -26,5 +26,5 @@ diff.o: diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
 	clang++ -c diff_project/diff.cpp
 recursive_down.o: recursive_down.cpp recursive_down.h
 	clang++ -c recursive_down.cpp
-frontend.o: frontend.cpp recursive_down.h diff_project/diff.cpp diff_project/diff.h diff_project/tree.h
+frontend.o: frontend.cpp recursive_down.h diff_project/diff.cpp diff_project/diff.h diff_project/tree.h frontend.h
 	clang++ -c frontend.cpp

@@ -46,7 +46,7 @@ union node_value {
 };
 
 enum types_of_node {
-    zero_t     = 0,
+    zero_t     = -1,
     value_t    = 1,
     operator_t = 2,
     variable_t = 3,
