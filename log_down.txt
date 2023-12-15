@@ -64,39 +64,48 @@ in get_bracket, call get_long_op:   ip = 7, type: 3, value: 6767
 in get_long_op, call get_variable:   ip = 7, type: 3, value: 6767
 
 
-in get_subexpression, call get_mul_or_div:   ip = 10, type: 1, value: 89
+in get_subexpression, call get_mul_or_div:   ip = 10, type: 2, value: 51
 
 
-in get_mul_or_div, call get_pow:   ip = 10, type: 1, value: 89
+in get_mul_or_div, call get_pow:   ip = 10, type: 2, value: 51
 
 
-in get_pow, call get_bracket:   ip = 10, type: 1, value: 89
+in get_pow, call get_bracket:   ip = 10, type: 2, value: 51
 
 
-in get_bracket, call get_long_op:   ip = 10, type: 1, value: 89
+in get_bracket, call get_long_op:   ip = 10, type: 2, value: 51
 
 
-in get_long_op, call get_variable:   ip = 10, type: 1, value: 89
+in get_long_op, call get_subexpression for cos:   ip = 10, type: 2, value: 51
 
 
-in get_variable, call get_number:   ip = 10, type: 1, value: 89
+in get_subexpression, call get_mul_or_div:   ip = 12, type: 3, value: 6767
 
 
-in get_number   ip = 10, type: 1, value: 89
+in get_mul_or_div, call get_pow:   ip = 12, type: 3, value: 6767
 
 
-in get_pow, call get_bracket:   ip = 12, type: 1, value: 3
+in get_pow, call get_bracket:   ip = 12, type: 3, value: 6767
 
 
-in get_bracket, call get_long_op:   ip = 12, type: 1, value: 3
+in get_bracket, call get_long_op:   ip = 12, type: 3, value: 6767
 
 
-in get_long_op, call get_variable:   ip = 12, type: 1, value: 3
+in get_long_op, call get_variable:   ip = 12, type: 3, value: 6767
 
 
-in get_variable, call get_number:   ip = 12, type: 1, value: 3
+in get_pow, call get_bracket:   ip = 14, type: 1, value: 3
 
 
-in get_number   ip = 12, type: 1, value: 3
+in get_bracket, call get_long_op:   ip = 14, type: 1, value: 3
+
+
+in get_long_op, call get_variable:   ip = 14, type: 1, value: 3
+
+
+in get_variable, call get_number:   ip = 14, type: 1, value: 3
+
+
+in get_number   ip = 14, type: 1, value: 3
 
 

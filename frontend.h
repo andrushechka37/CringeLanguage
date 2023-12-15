@@ -32,5 +32,3 @@ int read_program(char file[] = "program.txt");
 #define create_token(type, value) set_token(type, value, &(parsed_program->tokens[size]))
 
 int get_op_number_long_op(char name[]);
-
-

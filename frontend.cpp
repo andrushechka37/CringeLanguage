@@ -16,37 +16,37 @@ static void set_token(types_of_node type, double value, element_info * elem);
 static void get_long_name(int * ip, char * op);
 static int get_number(int * ip);
 
-token_array * parse_str_lexically(int len, token_array * parsed_program) {
+token_array * parse_str_lexically(size_t len, token_array * parsed_program) { // return token array
     parsed_program->tokens = (element_info *) calloc(len, sizeof(element_info));
-
+    IS_NULL_PTR(parsed_program);
     int ip = 0;
     int size = 0;
 
     while (cur_char != '\0') {
-        if (cur_char == ' ' || cur_char == '\n') {
+        if (cur_char == ' ' || cur_char == '\n') { // isspace
             ip++;
             continue;
         }
 
         if (isdigit(cur_char) != 0) {
 
-            create_token(value_t, get_number(&ip));  // experiment with \n
+            create_token(value_t, get_number(&ip));
 
         } else if (isalpha(cur_char) != 0) {  // numbers are prohibited in names of funcs and variables
 
             char op[OP_NAME_LEN] = "";
-            get_long_name(&ip, op);
+            get_long_name(&ip, op); // overflow of name len
 
-            if (get_op_number_long_op(op) != -1) {
+            if (get_op_number_long_op(op) != -1) { // funcs 2 pass or if
                 create_token(operator_t, get_op_number_long_op(op));
             } else {
                 create_token(variable_t, 6767);
             }
 
-        } else {
+        } else { // unite char and long op
             int number = get_op_number_single_op(cur_char);
 
-            if (number == -1) {
+            if (number == -1) {// ((sinx)) // is puntuate -> get punct
                 printf("jknfg");
                 ip++;
             } else {
@@ -66,7 +66,7 @@ token_array * parse_str_lexically(int len, token_array * parsed_program) {
 
 
 int main(void) {
-    int len = read_program();
+    size_t len = read_program();
     token_array parsed_program = {};
     parse_str_lexically(len, &parsed_program);
     int i = 0;
@@ -121,7 +121,7 @@ static void get_long_name(int * ip, char * op) {
         }
 }
 
-static int get_number(int * ip) {    // sscanf
+static int get_number(int * ip) {    // sscanf // %n
     int value = 0;
     while ('0' <= program[*ip] && program[*ip] <= '9') {
         value = value * 10 + program[*ip] - '0';

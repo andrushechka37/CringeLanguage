@@ -1,7 +1,7 @@
 #pragma once
 
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++17-extensions"
+#pragma clang diagnostic ignored "-Wc++17-extensions" // а таким нормально заниматься?
 
 inline char * program = NULL;
 inline int error_status = 0; 
@@ -29,10 +29,12 @@ enum operations {
     OP_SIN     = 50,   // 0011|0010     |
     OP_COS     = 51,   // 0011|0011     |
     OP_POW     = 52,   // 0011|0100     |
-    OP_FIG_C   = 53,
+    OP_FIG_C   = 53, // divide !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111
     OP_FIG_O   = 54,  
     OP_ROUND_O = 55,
-    OP_ROUND_C = 56
+    OP_ROUND_C = 56,
+    OP_IF      = 57,
+    OP_WHILE   = 58
 };
 
 struct op_info {

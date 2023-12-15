@@ -7,6 +7,7 @@
 
 #define type_of_elem parsed_program->tokens[elem_num].type
 #define value_of_elem parsed_program->tokens[elem_num].number
+#define is_elem(type, value) type_of_elem == type && value_of_elem == value
 
 #define cur_sit fprintf(plog,"   ip = %d, type: %d, value: %lg\n\n\n", elem_num, type_of_elem, value_of_elem)
 
@@ -126,11 +127,13 @@ static diff_tree_element * get_subexpression(token_array * parsed_program) {
     fprintf(plog, "in get_subexpression, call get_mul_or_div:");
     cur_sit;
     diff_tree_element * value = get_mul_or_div(parsed_program);
-    while (type_of_elem == operator_t && (value_of_elem == OP_ADD || value_of_elem == OP_SUB)) {
+    while (type_of_elem == operator_t && (value_of_elem == OP_ADD || value_of_elem == OP_SUB)) {// cut type of token
         int op = value_of_elem;
-        elem_num++;
+        elem_num++; // token !!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
         fprintf(plog, "in get_subexpression, call get_mul_or_div:");
-        cur_sit;
+        cur_sit;// verb
+
         diff_tree_element * value2 = get_mul_or_div(parsed_program);
         switch (op)
         {
@@ -162,7 +165,42 @@ diff_tree_element * get_expression(token_array * parsed_program) {
     }
 }
 
+// diff_tree_element * get_expression_with_variable(token_array * parsed_program) {
+//     if (type_of_elem == variable_t)
+// }
 
+// diff_tree_element * get_figure_bracket(token_array * parsed_program) {
+//     if (is_elem(syntax_t, FIGURE_BRACKET_OPEN)) {
+//         elem_num++;
+//         fprintf(plog, "in get_figure_bracket, call get_subexpression:");
+//         cur_sit; 
+//         diff_tree_element * value = get_operator(parsed_program);
+//         if (is_elem(syntax_t, FIGURE_BRACKET_CLOSE)) {
+//             elem_num++;
+//         } else {
+//             fprintf(plog,"bracket trouble\n");
+//             cur_sit;
+//         }
+//         return value;
+//     } else {
+//         fprintf(plog, "in get_figure_bracket, call get_long_op:");
+//         cur_sit; 
+//         return get_expression_with_variable(parsed_program);
+//     }
+// }
+
+// diff_tree_element * get_program(token_array * parsed_program) {
+//     plog = fopen("log_down.txt", "w");
+//     fprintf(plog, "in get_expression, call get_subexpression:");
+//     cur_sit;
+//     diff_tree_element * value = get_figure_bracket(parsed_program);
+//     fclose(plog);
+//     if (type_of_elem == zero_t) {
+//         return value;
+//     } else {
+//         fprintf(plog, "end of program is wrong");
+//     }
+// }
 
 
 
