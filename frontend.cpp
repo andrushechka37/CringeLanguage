@@ -40,9 +40,7 @@ token_array * parse_str_lexically(int len, token_array * parsed_program) {
             if (get_op_number_long_op(op) != -1) {
                 create_token(operator_t, get_op_number_long_op(op));
             } else {
-                // printf("peremenochka or x\n");
-                // continue;
-                create_token(variable_t, 66);
+                create_token(variable_t, 6767);
             }
 
         } else {
