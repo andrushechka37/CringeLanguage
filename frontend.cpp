@@ -8,7 +8,7 @@
 
 #include <math.h>
 #include <string.h>
-
+// russian names are in lex anal trouble
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem);
@@ -64,14 +64,15 @@ int main(void) {
     parsed_program.tokens = parse_str_lexically(len);
     int i = 0;
     printf("--------------------------\n");
-    while(i < 10) {
-        printf("%d-type %lg-value\n", parsed_program.tokens[i].type, parsed_program.tokens[i].number);
-        i++;
-    }
-    diff_tree_element * tree = get_expression(&parsed_program);
+    // while(i < 10) {
+    //     printf("%d-type %lg-value\n", parsed_program.tokens[i].type, parsed_program.tokens[i].number);
+    //     i++;
+    // }
+    diff_tree_element * tree = get_program(&parsed_program);
     set_parents(tree, tree);
     tree_visualize(tree);
     tree_dtor(&tree);
+    return 0;
 } 
 
 

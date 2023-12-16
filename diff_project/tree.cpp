@@ -33,7 +33,7 @@ int is_one_char_symbol(char name) {
     int i = 0;
     while (name != op_names_numbers[i].name[0]) {
         i++;
-        if (i > FUNCS_COUNT) {
+        if (i > OP_COUNT) {
             return 0;
         }
     }
@@ -56,8 +56,7 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
 
     diff_tree_element * element = (diff_tree_element *) calloc(1, sizeof(diff_tree_element));
     element->type = type;
-    switch (type)
-    {
+    switch (type) {
     case value_t:
         ELEM_DOUBLE = value;
         break;
@@ -65,6 +64,8 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
         ELEM_OP_NUM = (operations) value;
         element->value.operator_info.arg_quantity = get_op_arg_number((operations) value);
         break;
+    case syntax_t:
+        ELEM_OP_NUM = (operations) value;
     }
     element->left = left;
     element->right = right;

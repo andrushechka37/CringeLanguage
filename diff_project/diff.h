@@ -9,6 +9,7 @@
 #define DIV(left, right) node_ctor(OP_DIV, operator_t, left, right, NULL)
 #define POW(left, right) node_ctor(OP_POW, operator_t, left, right, NULL)
 
+#define VAR node_ctor(0, variable_t, NULL, NULL, NULL);
 #define IF(left, right) node_ctor(OP_IF, syntax_t, left, right, NULL);
 #define WHILE(left, right) node_ctor(OP_WHILE, syntax_t, left, right, NULL);
 

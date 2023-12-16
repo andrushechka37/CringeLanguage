@@ -8,7 +8,7 @@ inline int error_status = 0;
 
 #pragma clang diagnostic pop
 
-const int OP_NAME_LEN = 10;
+const int OP_NAME_LEN = 50;
 const int OP_COUNT = 17;
 const int FUNCS_COUNT = 12;
 const int OP_PRIORITY_MASK = 240;
