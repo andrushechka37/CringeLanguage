@@ -9,6 +9,8 @@
 #include <math.h>
 #include <string.h>
 // russian names are in lex anal trouble
+// define
+// retie with ;
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem);
