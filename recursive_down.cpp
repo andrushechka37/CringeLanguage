@@ -63,12 +63,12 @@ static diff_tree_element * get_long_op(token_array * parsed_program) {
 }
 
 static diff_tree_element * get_bracket(token_array * parsed_program) {
-    if (type_of_elem == syntax_t && value_of_elem == BRACKET_OPEN) {
+    if (type_of_elem == syntax_t && value_of_elem == OP_ROUND_O) {
         elem_num++;
         fprintf(plog, "in get_bracket, call get_subexpression:");
         cur_sit; 
         diff_tree_element * value = get_subexpression(parsed_program);
-        if (type_of_elem == syntax_t && value_of_elem == BRACKET_CLOSE) {
+        if (type_of_elem == syntax_t && value_of_elem == OP_ROUND_C) {
             elem_num++;
         } else {
             fprintf(plog,"bracket trouble\n");

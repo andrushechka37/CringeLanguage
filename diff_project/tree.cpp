@@ -10,23 +10,34 @@ static int set_type_and_value(double value, types_of_node type, diff_tree_elemen
 static int get_op_arg_number(operations op);
 
 op_names_numbers_t op_names_numbers[OP_COUNT] = {
-        {OP_ADD,     "+",       2},
-        {OP_SUB,     "-",       2},
-        {OP_MUL,     "*",       2},
-        {OP_DIV,     "/",       2},
-        {OP_SQRT, "sqrt",       1},
-        {OP_SIN,   "sin",       1},
-        {OP_COS,   "cos",       1},
-        {OP_POW,     "^",       2},
-        {OP_FIG_C,   "}",       0},
-        {OP_FIG_O,   "{",       0},
-        {OP_ROUND_O, "(",       0},
-        {OP_ROUND_O, ")",       0},
+        {OP_ADD,      "+",       2},
+        {OP_SUB,      "-",       2},
+        {OP_MUL,      "*",       2},
+        {OP_DIV,      "/",       2},
+        {OP_SQRT,  "sqrt",       1},
+        {OP_SIN,    "sin",       1},
+        {OP_COS,    "cos",       1},
+        {OP_POW,      "^",       2},
+        {OP_FIG_C,    "}",       0},
+        {OP_FIG_O,    "{",       0},
+        {OP_ROUND_O,  "(",       0},
+        {OP_ROUND_C,  ")",       0},
+        {OP_IF,      "if",       0},
+        {OP_WHILE,"while",       0},
 };
 
+int is_one_char_symbol(char name) {
+    int i = 0;
+    while (name != op_names_numbers[i].name[0]) {
+        i++;
+        if (i > FUNCS_COUNT) {
+            return 0;
+        }
+    }
+    return op_names_numbers[i].number;
+}
 
-
-int get_op_number_long_op(char name[]) { // do it faster with hashes instead of strcmp
+int is_func_name(char name[]) { // do it faster with hashes instead of strcmp
     int i = 0;
     while (strcmp(op_names_numbers[i].name, name)) {
         i++;
@@ -67,16 +78,6 @@ const char * get_op_symbol(int op_num) {
     return op_names_numbers[i].name;
 }
 
-int get_op_number_single_op(char name) { // do it faster with hashes instead of strcmp
-    int i = 0;
-    while (name != op_names_numbers[i].name[0]) {
-        i++;
-        if (i > FUNCS_COUNT) {
-            return -1;
-        }
-    }
-    return op_names_numbers[i].number;
-}
 
 
 

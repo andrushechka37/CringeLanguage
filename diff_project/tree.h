@@ -9,7 +9,7 @@ inline int error_status = 0;
 #pragma clang diagnostic pop
 
 const int OP_NAME_LEN = 10;
-const int OP_COUNT = 12;
+const int OP_COUNT = 14;
 const int FUNCS_COUNT = 12;
 const int OP_PRIORITY_MASK = 240;
 const char NIL = '_';
@@ -70,6 +70,8 @@ struct diff_tree {
 
 
 
+
+
 typedef diff_tree_element* elem_ptr;
 
 #define REQUIRE_SYMBOL(symbol)                   \
@@ -115,7 +117,7 @@ int tree_ctor(diff_tree * tree);
 void tree_dtor(elem_ptr * root);
 
 const char * get_op_symbol(int op_num);          // maybe static
-int get_op_number_single_op(char op_symbol);
+int is_one_char_symbol(char name);
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-compat-deprecated-writable-strings"

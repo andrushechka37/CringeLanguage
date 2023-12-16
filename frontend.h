@@ -15,20 +15,19 @@ struct variables {
     char * name;
 };
 
-#define IF #if
-#define WHILE #while
-
-
-const char FIGURE_BRACKET_OPEN = '{';
-const char FIGURE_BRACKET_CLOSE = '}';
-const char BRACKET_OPEN = '(';
-const char BRACKET_CLOSE = ')';
-
 
 
 int read_program(char file[] = "program.txt");
 
 #define cur_char program[ip]
-#define create_token(type, value) set_token(type, value, &(parsed_program->tokens[size]))
+#define create_token(type, value) set_token(type, value, &(parsed_program[size]))
 
-int get_op_number_long_op(char name[]);
+// dermo
+#define create_right_token(func)        \
+    if (func >= OP_FIG_C) {             \
+        create_token(syntax_t, func);   \
+    } else {                            \
+        create_token(operator_t, func); \
+    }  
+
+int is_func_name(char name[]);
