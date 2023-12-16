@@ -9,6 +9,14 @@
 #define DIV(left, right) node_ctor(OP_DIV, operator_t, left, right, NULL)
 #define POW(left, right) node_ctor(OP_POW, operator_t, left, right, NULL)
 
+#define IF(left, right) node_ctor(OP_IF, syntax_t, left, right, NULL);
+#define WHILE(left, right) node_ctor(OP_WHILE, syntax_t, left, right, NULL);
+
+#define LESS(left, right) node_ctor(OP_LESS, syntax_t, left, right, NULL);
+#define MORE(left, right) node_ctor(OP_MORE, syntax_t, left, right, NULL);
+#define EQUAL(left, right) node_ctor(OP_EQUAL, syntax_t, left, right, NULL);
+
+
 #define SIN(arg) node_ctor(OP_SIN, operator_t, NULL, arg, NULL)
 #define COS(arg) node_ctor(OP_COS, operator_t, NULL, arg, NULL)
 

@@ -4,7 +4,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++17-extensions"
 
-inline int elem_num = 0;
+inline int token_num = 0;
 inline FILE * plog = NULL;
 
 #pragma clang diagnostic pop

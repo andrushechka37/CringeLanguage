@@ -53,6 +53,9 @@ static void print_graph_node(diff_tree_element * element, FILE * pfile, int rank
         } else if (element->type == variable_t) {
             fprintf(pfile, "\t%d[shape=circle,style=filled, fillcolor=\"#f0ab67\", rank = %d," 
                    "label=\"x\"];\n", element, rank);
+        } else if (element->type == syntax_t) {
+            fprintf(pfile, "\t%d[shape=circle,style=filled, fillcolor=\"red\", rank = %d," 
+                   "label=\"%s\"];\n", element, rank, get_op_symbol(element->value.operator_info.op_number));
         }
 
     }
