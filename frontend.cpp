@@ -9,7 +9,6 @@
 #include <math.h>
 #include <string.h>
 // russian names are in lex anal trouble
-// define
 // retie with ;
 static int get_size_of_file(FILE * file);
 

@@ -4,7 +4,7 @@
 #include "diff_project/diff.h"
 #include "recursive_down.h"
 #include "frontend.h"
-
+// value rename 
 #define TYPE_OF_TOKEN parsed_program->tokens[token_num].type
 #define VALUE_OF_ELEM parsed_program->tokens[token_num].number
 #define IS_ELEM(type, value) TYPE_OF_TOKEN == type && VALUE_OF_ELEM == value
@@ -203,17 +203,28 @@ diff_tree_element * get_expression(token_array * parsed_program) {
     CHECK_BRACKET(OP_FIG_C);                                        \
                                                                     \
     return func;
+//  put while func in get oprator somewhere
+//  so E's can be connected with ;
+//  maybe while until }
+//  
+// 
+// 
+// 
 
 diff_tree_element * get_operator(token_array * parsed_program) {
 
-    fprintf(plog, "in get_operator, call");
-
     if (IS_ELEM(syntax_t, OP_FIG_O)) {
+
         CHECK_BRACKET(OP_FIG_O);
+
         if (IS_ELEM(syntax_t, OP_IF)) {
+
             CREATE_OP_NODE(IF(condition, body));
+
         } else if (IS_ELEM(syntax_t, OP_WHILE)) {
+
             CREATE_OP_NODE(WHILE(condition, body));
+
         } else {
             PRINT_REPORT("in get_operator, call get expression for E");
 
@@ -221,6 +232,7 @@ diff_tree_element * get_operator(token_array * parsed_program) {
             CHECK_BRACKET(OP_FIG_C)
             return body;
         }
+
     } else {
         fprintf(plog, "in get_operator, call get expression");
         PRINT_CUR_SIT;
@@ -228,6 +240,8 @@ diff_tree_element * get_operator(token_array * parsed_program) {
         return get_expression(parsed_program);
     }
 }
+
+#undef CREATE_OP_NODE
 
 diff_tree_element * get_program(token_array * parsed_program) {
 

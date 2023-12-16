@@ -1,7 +1,7 @@
 in get_expression, call get_subexpression:   ip = 0, type: 4, value: 54
 
 
-in get_operator, callin get_operator, call get expression   ip = 3, type: 3, value: 7777
+in get_operator, call get expression   ip = 3, type: 3, value: 7777
 
 
 in get expression, call get subexpression   ip = 3, type: 3, value: 7777
@@ -52,7 +52,7 @@ in get_number   ip = 5, type: 1, value: 5
 in get_operator, call get operator   ip = 7, type: 1, value: 7
 
 
-in get_operator, callin get_operator, call get expression   ip = 7, type: 1, value: 7
+in get_operator, call get expression   ip = 7, type: 1, value: 7
 
 
 in get expression, call get subexpression   ip = 7, type: 1, value: 7
