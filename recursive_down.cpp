@@ -20,7 +20,7 @@ static diff_tree_element * get_subexpression(token_array * parsed_program);
 
 static diff_tree_element * get_number(token_array * parsed_program) {
 
-    PRINT_REPORT("## in get_number");
+    PRINT_REPORT("in get_number");
     if (TYPE_OF_TOKEN != value_t) {
         PRINT_REPORT("## not a number in get number")
     }
@@ -40,7 +40,6 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
         return get_number(parsed_program);
     }
 }
-
 static diff_tree_element * get_long_op(token_array * parsed_program) {
 
     if (IS_ELEM(operator_t, OP_SIN)) {
@@ -118,8 +117,7 @@ static diff_tree_element * get_mul_or_div(token_array * parsed_program) {
         PRINT_REPORT("in get_mul_or_div, call get_pow:");
 
         diff_tree_element * value2 = get_pow(parsed_program);
-        switch (op)
-        {
+        switch (op) {
         case OP_MUL:
             value =  MUL(value, value2);
             break;

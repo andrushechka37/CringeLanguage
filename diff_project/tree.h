@@ -9,7 +9,7 @@ inline int error_status = 0;
 #pragma clang diagnostic pop
 
 const int OP_NAME_LEN = 50;
-const int OP_COUNT = 17;
+const int OP_COUNT = 18;
 const int FUNCS_COUNT = 12;
 const int OP_PRIORITY_MASK = 240;
 const char NIL = '_';
@@ -37,7 +37,8 @@ enum operations {
     OP_WHILE   = 58,
     OP_MORE    = 59,
     OP_LESS    = 60,
-    OP_EQUAL   = 61
+    OP_EQUAL   = 61,
+    OP_END     = 62
 };
 
 struct op_info {
