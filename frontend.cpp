@@ -13,43 +13,78 @@ FILE * pfile = NULL;
 
 static int get_size_of_file(FILE * file);
 
-static void set_token(types_of_node type, double value, element_info * elem);
+static void set_token(types_of_node type, double value, element_info * elem, char name[]);
 
 static void get_word(int * ip, char * op);
 static int get_number(int * ip);
 element_info * parse_str_lexically(size_t len);
 
+// #define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && ELEM_OP_NUM == value_of_node)
+
+// #define NULL_ELEM            \
+//     if (element == NULL) {   \
+//         return;              \
+//     }
 
 
 
+// void print_var(diff_tree_element * element) {
 
-void print_int(diff_tree_element * tree) {
-    fprintf(pfile, "%d", tree->value);
-}
+//     fprintf(pfile, "xxxxxxx");
 
-void print_var(diff_tree_element * tree) {
-    fprintf(pfile, "xxx");
-}
+//     return;
+// }
 
-void print_if(diff_tree_element * tree) {
-    fprintf(pfile, "if (");
-    print_expression(tree);
-    fprintf(pfile, ")");
-    fprintf(pfile, "{");
-    print_expression(tree);
-    fprintf(pfile, "}");
+// void print_int(diff_tree_element * element) {
 
-}
+//     print_node(element->left);
 
-void print_if(diff_tree_element * tree) {
-    fprintf(pfile, "while (");
-    print_expression(tree);
-    fprintf(pfile, ")");
-    fprintf(pfile, "{");
-    print_expression(tree);
-    fprintf(pfile, "}");
+//     fprintf(pfile, "%lg", ELEM_DOUBLE);
 
-}
+//     print_node(element->right);
+
+//     return;
+// }
+
+// void print_complex_expression(diff_tree_element * element) {
+
+//      NULL_ELEM;
+
+//      if (IS_ELEM(element, syntax_t, OP_IF)) {
+
+//      } else if (IS_ELEM(element, syntax_t, OP_IF)) {
+
+//      } else {
+
+//      }
+
+// }
+// void print_node(diff_tree_element * element) {
+
+//     NULL_ELEM;
+
+//     if (IS_ELEM(element, syntax_t, OP_END)) {
+
+//         print_node(element->left);
+
+//         if (!(IS_ELEM(element->left, syntax_t, OP_WHILE) || IS_ELEM(element->left, syntax_t, OP_IF))) {
+//             fprintf(pfile, ";\n");
+//         }
+
+//         print_node(element->right);
+
+//     } else if (ELEM_TYPE == value_t) {
+
+//         print_int(element);
+
+//     } else if (ELEM_TYPE == variable_t) {
+
+//         print_var(element);
+
+//     } else {
+//         print_complex_expression(element);
+//     }
+// }
 
 int main(void) {
     size_t len = read_program();
@@ -93,9 +128,10 @@ int read_program(char file[]) {
     return len;
 }
 
-static void set_token(types_of_node type, double value, element_info * elem) {
+static void set_token(types_of_node type, double value, element_info * elem, char name[]) {
     elem->number = value;
     elem->type = type;
+    strcpy(elem->name, name);
 }
 
 static void get_word(int * ip, char * op) {
@@ -132,11 +168,13 @@ element_info * parse_str_lexically(size_t len) {
     
     while (cur_char != '\0') {
         if (isspace(cur_char) != 0) {
+
             ip++;
             continue;      // нужно ли единство стиля?
+
         } else if (isdigit(cur_char) != 0) {                   
                                  
-            create_token(value_t, get_number(&ip));        
+            create_token(value_t, get_number(&ip), "0");        
                                                            
         } else if (isalpha(cur_char) != 0) { // non letters are restricted
 
@@ -144,19 +182,31 @@ element_info * parse_str_lexically(size_t len) {
             get_word(&ip, op);
                 
             if (is_func_name(op) != -1) {
-                create_right_token(is_func_name(op));
+                create_right_token(is_func_name(op), op);
             } else {
-                create_token(variable_t, 7777);
+                create_token(variable_t, 7777, op);
             }
 
+
         } else {
-            create_right_token(is_one_char_symbol(cur_char));
+            char op[2] = "";
+            op[0] = cur_char;
+            create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
         }
 
-        printf("%d   ,%d-type %lg-value\n", size, parsed_program[size].type, parsed_program[size].number);
+        printf("%d   ,%d-type %lg-value,  %s- name\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
         size++;
     }
     parsed_program[size].type = zero_t;
     return parsed_program;
 }
+
+
+
+
+
+
+
+
+

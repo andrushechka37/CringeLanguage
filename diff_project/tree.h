@@ -142,3 +142,4 @@ double tree_eval(diff_tree_element * element, double x_value);
 #define ELEM_OP_NUM element->value.operator_info.op_number
 #define ELEM_DOUBLE element->value.number
 #define ELEM_OP_ARG element->value.operator_info.arg_quantity
+#define ELEM_TYPE element->type

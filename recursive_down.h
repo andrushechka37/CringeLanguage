@@ -9,7 +9,7 @@ diff_tree_element * get_program(token_array * parsed_program);
 #define TYPE_OF_TOKEN parsed_program->tokens[token_num].type
 #define VALUE_OF_TOKEN parsed_program->tokens[token_num].number
 
-#define IS_ELEM(type, value) (TYPE_OF_TOKEN == type && VALUE_OF_TOKEN == value)
+
 
 #define PRINT_CUR_SIT fprintf(plog,"   ip = %d, type: %d, value: %lg\n\n\n", token_num, TYPE_OF_TOKEN, VALUE_OF_TOKEN)
 

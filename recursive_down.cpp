@@ -5,6 +5,8 @@
 #include "recursive_down.h"
 #include "frontend.h"
 
+#define IS_ELEM(type, value) (TYPE_OF_TOKEN == type && VALUE_OF_TOKEN == value)
+
 int token_num = 0;
 FILE * plog = NULL;
 
@@ -260,7 +262,7 @@ diff_tree_element * get_operators(token_array * parsed_program) {
             cur_node = get_expression(parsed_program);
         }
 
-        value = node_ctor(OP_END, syntax_t, cur_node, value, NULL);
+        value = node_ctor(OP_END, syntax_t, value, cur_node, NULL);
     }
 
     PRINT_REPORT("#### while ends");
@@ -289,7 +291,7 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
         PRINT_REPORT("## got one");
 
-        value = node_ctor(OP_END, syntax_t, cur_node, value, NULL);
+        value = node_ctor(OP_END, syntax_t, value, cur_node, NULL);
     } 
 
     if (is_figure_bracket == 0){
@@ -327,9 +329,6 @@ diff_tree_element * get_program(token_array * parsed_program) {
         return NULL;
     }
 }
-
-
-
 
 
 
