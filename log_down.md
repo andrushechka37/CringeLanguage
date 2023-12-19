@@ -7,100 +7,115 @@ in get_single_part_of_program   ip = 0, type: 4, value: 54
 call another get operator   ip = 0, type: 4, value: 54
 
 
-in get_single_part_of_program   ip = 1, type: 4, value: 54
+in get_single_part_of_program   ip = 1, type: 3, value: 7777
 
 
-call another get operator   ip = 1, type: 4, value: 54
+### int get_single_part_of_program call get expression   ip = 1, type: 3, value: 7777
 
 
-in get_single_part_of_program   ip = 2, type: 3, value: 7777
+in get expression, call get subexpression   ip = 1, type: 3, value: 7777
 
 
-### int get_single_part_of_program call get expression   ip = 2, type: 3, value: 7777
+in get_subexpression, call get_mul_or_div:   ip = 1, type: 3, value: 7777
 
 
-in get expression, call get subexpression   ip = 2, type: 3, value: 7777
+in get_mul_or_div, call get_pow:   ip = 1, type: 3, value: 7777
 
 
-in get_subexpression, call get_mul_or_div:   ip = 2, type: 3, value: 7777
+in get_pow, call get_bracket:   ip = 1, type: 3, value: 7777
 
 
-in get_mul_or_div, call get_pow:   ip = 2, type: 3, value: 7777
+in get_bracket, call get_long_op:   ip = 1, type: 3, value: 7777
 
 
-in get_pow, call get_bracket:   ip = 2, type: 3, value: 7777
+in get_long_op, call get_variable:   ip = 1, type: 3, value: 7777
 
 
-in get_bracket, call get_long_op:   ip = 2, type: 3, value: 7777
+in get_variable, got variable   ip = 2, type: 2, value: 17
 
 
-in get_long_op, call get_variable:   ip = 2, type: 3, value: 7777
+in get_subexpression, call get_mul_or_div:   ip = 3, type: 1, value: 5
 
 
-in get_variable, got variable   ip = 3, type: 2, value: 17
+in get_mul_or_div, call get_pow:   ip = 3, type: 1, value: 5
 
 
-in get_subexpression, call get_mul_or_div:   ip = 4, type: 1, value: 5
+in get_pow, call get_bracket:   ip = 3, type: 1, value: 5
 
 
-in get_mul_or_div, call get_pow:   ip = 4, type: 1, value: 5
+in get_bracket, call get_long_op:   ip = 3, type: 1, value: 5
 
 
-in get_pow, call get_bracket:   ip = 4, type: 1, value: 5
+in get_long_op, call get_variable:   ip = 3, type: 1, value: 5
 
 
-in get_bracket, call get_long_op:   ip = 4, type: 1, value: 5
+in get_variable, call get_number:   ip = 3, type: 1, value: 5
 
 
-in get_long_op, call get_variable:   ip = 4, type: 1, value: 5
+in get_number   ip = 3, type: 1, value: 5
 
 
-in get_variable, call get_number:   ip = 4, type: 1, value: 5
+# complex case, call get single part of program   ip = 5, type: 4, value: 54
 
 
-in get_number   ip = 4, type: 1, value: 5
+in get_single_part_of_program   ip = 5, type: 4, value: 54
 
 
-#### while ends   ip = 6, type: 4, value: 53
+call another get operator   ip = 5, type: 4, value: 54
 
 
-## get_operators ends its work   ip = 6, type: 4, value: 53
+in get_single_part_of_program   ip = 6, type: 4, value: 57
 
 
-## got one   ip = 7, type: 4, value: 54
+### in get_single_part_of_program, call get expression for condition   ip = 8, type: 1, value: 8
 
 
-call another get operator   ip = 7, type: 4, value: 54
+in get expression, call get subexpression   ip = 8, type: 1, value: 8
 
 
-in get_single_part_of_program   ip = 8, type: 4, value: 57
+in get_subexpression, call get_mul_or_div:   ip = 8, type: 1, value: 8
 
 
-### in get_single_part_of_program, call get expression for condition   ip = 10, type: 1, value: 8
+in get_mul_or_div, call get_pow:   ip = 8, type: 1, value: 8
 
 
-in get expression, call get subexpression   ip = 10, type: 1, value: 8
+in get_pow, call get_bracket:   ip = 8, type: 1, value: 8
 
 
-in get_subexpression, call get_mul_or_div:   ip = 10, type: 1, value: 8
+in get_bracket, call get_long_op:   ip = 8, type: 1, value: 8
 
 
-in get_mul_or_div, call get_pow:   ip = 10, type: 1, value: 8
+in get_long_op, call get_variable:   ip = 8, type: 1, value: 8
 
 
-in get_pow, call get_bracket:   ip = 10, type: 1, value: 8
+in get_variable, call get_number:   ip = 8, type: 1, value: 8
 
 
-in get_bracket, call get_long_op:   ip = 10, type: 1, value: 8
+in get_number   ip = 8, type: 1, value: 8
 
 
-in get_long_op, call get_variable:   ip = 10, type: 1, value: 8
+in get expression, call get subexpression   ip = 10, type: 1, value: 5
 
 
-in get_variable, call get_number:   ip = 10, type: 1, value: 8
+in get_subexpression, call get_mul_or_div:   ip = 10, type: 1, value: 5
 
 
-in get_number   ip = 10, type: 1, value: 8
+in get_mul_or_div, call get_pow:   ip = 10, type: 1, value: 5
+
+
+in get_pow, call get_bracket:   ip = 10, type: 1, value: 5
+
+
+in get_bracket, call get_long_op:   ip = 10, type: 1, value: 5
+
+
+in get_long_op, call get_variable:   ip = 10, type: 1, value: 5
+
+
+in get_variable, call get_number:   ip = 10, type: 1, value: 5
+
+
+in get_number   ip = 10, type: 1, value: 5
 
 
 ### in get_single_part_of_program, call get operator for body   ip = 13, type: 1, value: 6
@@ -136,37 +151,16 @@ in get_variable, call get_number:   ip = 13, type: 1, value: 6
 in get_number   ip = 13, type: 1, value: 6
 
 
-### int get_single_part_of_program call get expression   ip = 15, type: 4, value: 54
+# complex case, call get single part of program   ip = 15, type: 4, value: 54
 
 
-in get expression, call get subexpression   ip = 15, type: 4, value: 54
+in get_single_part_of_program   ip = 15, type: 4, value: 54
 
 
-in get_subexpression, call get_mul_or_div:   ip = 15, type: 4, value: 54
+call another get operator   ip = 15, type: 4, value: 54
 
 
-in get_mul_or_div, call get_pow:   ip = 15, type: 4, value: 54
-
-
-in get_pow, call get_bracket:   ip = 15, type: 4, value: 54
-
-
-in get_bracket, call get_long_op:   ip = 15, type: 4, value: 54
-
-
-in get_long_op, call get_variable:   ip = 15, type: 4, value: 54
-
-
-in get_variable, call get_number:   ip = 15, type: 4, value: 54
-
-
-in get_number   ip = 15, type: 4, value: 54
-
-
-## not a number in get number   ip = 15, type: 4, value: 54
-
-
-# trouble in get expression   ip = 16, type: 4, value: 57
+in get_single_part_of_program   ip = 16, type: 4, value: 57
 
 
 ### in get_single_part_of_program, call get expression for condition   ip = 18, type: 1, value: 6
@@ -229,30 +223,120 @@ in get_variable, call get_number:   ip = 21, type: 1, value: 5
 in get_number   ip = 21, type: 1, value: 5
 
 
-#### while ends   ip = 23, type: 4, value: 53
+in get expression, call get subexpression   ip = 23, type: 1, value: 9
 
 
-## get_operators ends its work   ip = 23, type: 4, value: 53
+in get_subexpression, call get_mul_or_div:   ip = 23, type: 1, value: 9
 
 
-#### while ends   ip = 23, type: 4, value: 53
+in get_mul_or_div, call get_pow:   ip = 23, type: 1, value: 9
 
 
-## get_operators ends its work   ip = 23, type: 4, value: 53
+in get_pow, call get_bracket:   ip = 23, type: 1, value: 9
 
 
-#### while ends   ip = 23, type: 4, value: 53
+in get_bracket, call get_long_op:   ip = 23, type: 1, value: 9
 
 
-## get_operators ends its work   ip = 23, type: 4, value: 53
+in get_long_op, call get_variable:   ip = 23, type: 1, value: 9
 
 
-## got one   ip = 24, type: 4, value: 53
+in get_variable, call get_number:   ip = 23, type: 1, value: 9
 
 
-## got one   ip = 25, type: 4, value: 53
+in get_number   ip = 23, type: 1, value: 9
 
 
-## end of program is wrong   ip = 25, type: 4, value: 53
+### int get_single_part_of_program call get expression   ip = 25, type: 1, value: 78
+
+
+in get expression, call get subexpression   ip = 25, type: 1, value: 78
+
+
+in get_subexpression, call get_mul_or_div:   ip = 25, type: 1, value: 78
+
+
+in get_mul_or_div, call get_pow:   ip = 25, type: 1, value: 78
+
+
+in get_pow, call get_bracket:   ip = 25, type: 1, value: 78
+
+
+in get_bracket, call get_long_op:   ip = 25, type: 1, value: 78
+
+
+in get_long_op, call get_variable:   ip = 25, type: 1, value: 78
+
+
+in get_variable, call get_number:   ip = 25, type: 1, value: 78
+
+
+in get_number   ip = 25, type: 1, value: 78
+
+
+#### while ends   ip = 27, type: 4, value: 53
+
+
+## get_operators ends its work   ip = 27, type: 4, value: 53
+
+
+#### while ends   ip = 27, type: 4, value: 53
+
+
+## get_operators ends its work   ip = 27, type: 4, value: 53
+
+
+## got one   ip = 28, type: 1, value: 5
+
+
+### int get_single_part_of_program call get expression   ip = 28, type: 1, value: 5
+
+
+in get expression, call get subexpression   ip = 28, type: 1, value: 5
+
+
+in get_subexpression, call get_mul_or_div:   ip = 28, type: 1, value: 5
+
+
+in get_mul_or_div, call get_pow:   ip = 28, type: 1, value: 5
+
+
+in get_pow, call get_bracket:   ip = 28, type: 1, value: 5
+
+
+in get_bracket, call get_long_op:   ip = 28, type: 1, value: 5
+
+
+in get_long_op, call get_variable:   ip = 28, type: 1, value: 5
+
+
+in get_variable, call get_number:   ip = 28, type: 1, value: 5
+
+
+in get_number   ip = 28, type: 1, value: 5
+
+
+#### while ends   ip = 30, type: 4, value: 53
+
+
+## get_operators ends its work   ip = 30, type: 4, value: 53
+
+
+#### while ends   ip = 30, type: 4, value: 53
+
+
+## get_operators ends its work   ip = 30, type: 4, value: 53
+
+
+## got one   ip = 31, type: 4, value: 53
+
+
+#### while ends   ip = 31, type: 4, value: 53
+
+
+## get_operators ends its work   ip = 31, type: 4, value: 53
+
+
+## got one   ip = 32, type: -1, value: 0
 
 

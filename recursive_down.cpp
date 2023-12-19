@@ -4,8 +4,6 @@
 #include "diff_project/diff.h"
 #include "recursive_down.h"
 #include "frontend.h"
-// вложенный оператор не работает, посмотреть вызовы функций
-// подумать об очередности вызоыва функий
 
 int token_num = 0;
 FILE * plog = NULL;
@@ -248,6 +246,12 @@ diff_tree_element * get_operators(token_array * parsed_program) {
         } else if (IS_ELEM(syntax_t, OP_WHILE)) {
 
             CREATE_OP_NODE(WHILE(condition, body));
+
+        } else if (IS_ELEM(syntax_t, OP_FIG_O)){
+
+            PRINT_REPORT("# complex case, call get single part of program");
+
+            cur_node = get_single_part_of_program(parsed_program);
 
         } else {
 

@@ -8,68 +8,59 @@
 
 #include <math.h>
 #include <string.h>
-// russian names are in lex anal trouble
-// retie with ;
+
+FILE * pfile = NULL;
+
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem);
 
 static void get_word(int * ip, char * op);
 static int get_number(int * ip);
-              
-element_info * parse_str_lexically(size_t len) {
+element_info * parse_str_lexically(size_t len);
 
-    element_info * parsed_program = (element_info *) calloc(len, sizeof(element_info));
-    IS_NULL_PTR(parsed_program);
 
-    int ip = 0;
-    int size = 0;
-    
-    while (cur_char != '\0') {
-        if (isspace(cur_char) != 0) {
-            ip++;
-            continue;      // нужно ли единство стиля?
-        } else if (isdigit(cur_char) != 0) {                   
-                                 
-            create_token(value_t, get_number(&ip));        
-                                                           
-        } else if (isalpha(cur_char) != 0) { // non letters are restricted
 
-            char op[OP_NAME_LEN] = "";
-            get_word(&ip, op);
-                
-            if (is_func_name(op) != -1) {
-                create_right_token(is_func_name(op));
-            } else {
-                create_token(variable_t, 7777);
-            }
 
-        } else {
-            create_right_token(is_one_char_symbol(cur_char));
-            ip++;
-        }
 
-        printf("%d   ,%d-type %lg-value\n", size, parsed_program[size].type, parsed_program[size].number);
-        size++;
-    }
-    parsed_program[size].type = zero_t;
-    return parsed_program;
+void print_int(diff_tree_element * tree) {
+    fprintf(pfile, "%d", tree->value);
 }
 
+void print_var(diff_tree_element * tree) {
+    fprintf(pfile, "xxx");
+}
 
+void print_if(diff_tree_element * tree) {
+    fprintf(pfile, "if (");
+    print_expression(tree);
+    fprintf(pfile, ")");
+    fprintf(pfile, "{");
+    print_expression(tree);
+    fprintf(pfile, "}");
 
+}
+
+void print_if(diff_tree_element * tree) {
+    fprintf(pfile, "while (");
+    print_expression(tree);
+    fprintf(pfile, ")");
+    fprintf(pfile, "{");
+    print_expression(tree);
+    fprintf(pfile, "}");
+
+}
 
 int main(void) {
     size_t len = read_program();
     token_array parsed_program = {};
+
     parsed_program.tokens = parse_str_lexically(len);
-    int i = 0;
+
     printf("--------------------------\n");
-    // while(i < 10) {
-    //     printf("%d-type %lg-value\n", parsed_program.tokens[i].type, parsed_program.tokens[i].number);
-    //     i++;
-    // }
+
     diff_tree_element * tree = get_program(&parsed_program);
+
     set_parents(tree, tree);
     tree_visualize(tree);
     tree_dtor(&tree);
@@ -128,4 +119,44 @@ static int get_number(int * ip) {    // sscanf // %n
         (*ip)++;
     }
     return value;
+}
+
+      
+element_info * parse_str_lexically(size_t len) {
+
+    element_info * parsed_program = (element_info *) calloc(len, sizeof(element_info));
+    IS_NULL_PTR(parsed_program);
+
+    int ip = 0;
+    int size = 0;
+    
+    while (cur_char != '\0') {
+        if (isspace(cur_char) != 0) {
+            ip++;
+            continue;      // нужно ли единство стиля?
+        } else if (isdigit(cur_char) != 0) {                   
+                                 
+            create_token(value_t, get_number(&ip));        
+                                                           
+        } else if (isalpha(cur_char) != 0) { // non letters are restricted
+
+            char op[OP_NAME_LEN] = "";
+            get_word(&ip, op);
+                
+            if (is_func_name(op) != -1) {
+                create_right_token(is_func_name(op));
+            } else {
+                create_token(variable_t, 7777);
+            }
+
+        } else {
+            create_right_token(is_one_char_symbol(cur_char));
+            ip++;
+        }
+
+        printf("%d   ,%d-type %lg-value\n", size, parsed_program[size].type, parsed_program[size].number);
+        size++;
+    }
+    parsed_program[size].type = zero_t;
+    return parsed_program;
 }
