@@ -49,7 +49,7 @@ element_info * parse_str_lexically(size_t len) {
             ip++;
         }
 
-        printf("%d-type %lg-value\n", parsed_program[size].type, parsed_program[size].number);
+        printf("%d   ,%d-type %lg-value\n", size, parsed_program[size].type, parsed_program[size].number);
         size++;
     }
     parsed_program[size].type = zero_t;
@@ -109,7 +109,7 @@ static void set_token(types_of_node type, double value, element_info * elem) {
 
 static void get_word(int * ip, char * op) {
         int i = 0;
-        while ('a' <= program[*ip] && program[*ip] <= 'z') { // opname len check 
+        while (('a' <= program[*ip] && program[*ip] <= 'z') || program[*ip] == '_') { // opname len check 
             op[i] = program[*ip];                        // sscanf
             i++;    
             (*ip)++;
@@ -129,4 +129,3 @@ static int get_number(int * ip) {    // sscanf // %n
     }
     return value;
 }
-

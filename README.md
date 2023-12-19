@@ -1,10 +1,11 @@
 # Grammatic of language(scheme of work of recursive down):
 
-### get_program := `get_operator` +
-### get_operator := '{' `IF` | `WHILE` | `get_expression` '}' | `get_expression`
-### IF := 'if' '(' `get_expression` ')' `get_operator`
-### WHILE := 'while' '(' `get_expression` ')' `get_operator`
-### get_expression := `get_subexpression` {[<, >, =]  `get_subexpression`} ';' <- zero or one time
+### get_program := `get_single_part_of_program` 'END_OF_PROGRAM'
+### get_single_part_of_program := '{' `get_single_part_of_program` '}'* | `get_operators`
+### get_operators := '{' `IF` *| `WHILE` *| `get_expression` *'}'
+### IF := 'if' '(' `get_expression` ')' `get_single_part_of_program`
+### WHILE := 'while' '(' `get_expression` ')' `get_single_part_of_program`
+### get_expression := `get_subexpression` ';'| `get_subexpression` {[<, >, =]  `get_subexpression` ';}
 ### get_subexpression := `get_mul_or_div`{[ + - ] `get_mul_or_div`}*
 ### get_mul_or_div := `get_pow`{[ * / ] `get_pow`}*
 ### get_pow := `get_bracket`{[ ^ ] `get_bracket`}*
