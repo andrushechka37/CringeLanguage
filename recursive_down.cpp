@@ -261,11 +261,11 @@ diff_tree_element * get_operators(token_array * parsed_program) {
 
             cur_node = get_expression(parsed_program);
         }
-
+        
         value->left = cur_node;
         if (!IS_TOKEN(syntax_t, OP_FIG_C)) {
-        value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
-        value = value->right;
+            value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
+            value = value->right;
         }
     }
 
@@ -279,7 +279,7 @@ diff_tree_element * get_operators(token_array * parsed_program) {
 diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
     diff_tree_element * cur_node = NULL;
-    diff_tree_element * value = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
+    diff_tree_element * value = node_ctor(OP_SIN, syntax_t, NULL, NULL, NULL);
     diff_tree_element * original = value;
 
     PRINT_REPORT("in get_single_part_of_program");
@@ -299,8 +299,10 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
         PRINT_REPORT("## got one");
 
         value->left = cur_node;
-        value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
-        value = value->right;
+        if (IS_TOKEN(syntax_t, OP_FIG_O)) {
+            value->right = node_ctor(OP_FIG_C, syntax_t, NULL, NULL, NULL);
+            value = value->right;
+        }
     } 
 
     if (is_figure_bracket == 0){
