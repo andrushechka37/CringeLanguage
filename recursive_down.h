@@ -18,7 +18,7 @@ diff_tree_element * get_program(token_array * parsed_program);
     PRINT_CUR_SIT;
 
 #define CHECK_BRACKET(name)                                        \
-    if (IS_ELEM(syntax_t, name)) {                                 \
+    if (IS_TOKEN(syntax_t, name)) {                                 \
         token_num++;                                               \
     } else {                                                       \
         fprintf(plog, "%s %d-line", __FUNCTION__, __LINE__);       \

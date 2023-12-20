@@ -19,12 +19,14 @@ static void get_word(int * ip, char * op);
 static int get_number(int * ip);
 element_info * parse_str_lexically(size_t len);
 
-// #define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && ELEM_OP_NUM == value_of_node)
 
-// #define NULL_ELEM            \
-//     if (element == NULL) {   \
-//         return;              \
-//     }
+void print_node(diff_tree_element * element);
+#define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && ELEM_OP_NUM == value_of_node)
+
+#define NULL_ELEM            \
+    if (element == NULL) {   \
+        return;              \
+    }
 
 
 
@@ -37,56 +39,120 @@ element_info * parse_str_lexically(size_t len);
 
 // void print_int(diff_tree_element * element) {
 
-//     print_node(element->left);
-
-//     fprintf(pfile, "%lg", ELEM_DOUBLE);
-
-//     print_node(element->right);
+//     if (element->value.number < 0) {
+//                 fprintf(pfile,"(%.2lg)", element->value);
+//     } else {
+//                 fprintf(pfile,"%.2lg", element->value);
+//     }
 
 //     return;
 // }
 
-// void print_complex_expression(diff_tree_element * element) {
+void print_complex_expression(diff_tree_element * element) {
 
-//      NULL_ELEM;
+     NULL_ELEM;
 
-//      if (IS_ELEM(element, syntax_t, OP_IF)) {
+     if (IS_ELEM(element, syntax_t, OP_IF) || IS_ELEM(element, syntax_t, OP_WHILE)) {
 
-//      } else if (IS_ELEM(element, syntax_t, OP_IF)) {
+        fprintf(pfile, "%s (", get_op_symbol(ELEM_OP_NUM));
+        print_node(element->left);
+        fprintf(pfile, ")");
 
-//      } else {
+        fprintf(pfile, " {", get_op_symbol(ELEM_OP_NUM));
+        print_node(element->right);
+        fprintf(pfile, "}");
 
-//      }
+     } else if (IS_ELEM(element, syntax_t, OP_MORE) || 
+                IS_ELEM(element, syntax_t, OP_LESS) || 
+                IS_ELEM(element, syntax_t, OP_EQUAL)) {
 
-// }
-// void print_node(diff_tree_element * element) {
+        print_node(element->left);
 
-//     NULL_ELEM;
+        fprintf(pfile, " %s ", get_op_symbol(ELEM_OP_NUM));
 
-//     if (IS_ELEM(element, syntax_t, OP_END)) {
+        print_node(element->right);
+     } else {
 
-//         print_node(element->left);
+        if (IS_ROUND_BRACKET) {
+            fprintf(pfile,"(");
+        }
 
-//         if (!(IS_ELEM(element->left, syntax_t, OP_WHILE) || IS_ELEM(element->left, syntax_t, OP_IF))) {
-//             fprintf(pfile, ";\n");
-//         }
+        print_complex_expression(element->left);
 
-//         print_node(element->right);
+        if(element->type == value_t) {
 
-//     } else if (ELEM_TYPE == value_t) {
+            print_node(element);
 
-//         print_int(element);
+        } else if (element->type == operator_t) {
 
-//     } else if (ELEM_TYPE == variable_t) {
+            fprintf(pfile, " %s ", get_op_symbol(ELEM_OP_NUM));
 
-//         print_var(element);
+        } else if ((int)element->type == variable_t) {
 
-//     } else {
-//         print_complex_expression(element);
-//     }
-// }
+            print_node(element);
 
-int main(void) {
+        }
+
+        print_complex_expression(element->right);
+
+        if (IS_ROUND_BRACKET) {
+            fprintf(pfile,")");
+        }
+
+        }
+    return;
+}
+
+void print_node(diff_tree_element * element) {
+
+    NULL_ELEM;
+
+    if (IS_ELEM(element, syntax_t, OP_END)) {
+        printf("nhf[fnm cer gbnm cjr]");
+
+        print_node(element->left);
+            printf("хуй");
+            if (!(element->left && (IS_ELEM(element->left, syntax_t, OP_WHILE) || IS_ELEM(element->left, syntax_t, OP_IF)))) {
+                fprintf(pfile, ";\n");
+            }
+        print_node(element->right);
+
+    } else if (ELEM_TYPE == value_t) {
+
+        if (element->value.number < 0) {
+            fprintf(pfile,"(%.2lg)", element->value.number);
+        } else {
+            fprintf(pfile,"%.2lg", element->value.number);
+        }
+
+    } else if (ELEM_TYPE == variable_t) {
+
+        fprintf(pfile, "xxx");
+
+    } else {
+        if (IS_ELEM(element, syntax_t, OP_IF) || IS_ELEM(element, syntax_t, OP_WHILE)) {
+
+        fprintf(pfile, "%s (", get_op_symbol(ELEM_OP_NUM));
+        print_node(element->left);
+        fprintf(pfile, ")");
+
+        fprintf(pfile, " {", get_op_symbol(ELEM_OP_NUM));
+        print_node(element->right);
+        fprintf(pfile, "}");
+
+        } else {
+
+        print_node(element->left);
+
+        fprintf(pfile, " %s ", get_op_symbol(ELEM_OP_NUM));
+
+        print_node(element->right);
+
+        }
+    }
+}
+
+int main(void) {         
     size_t len = read_program();
     token_array parsed_program = {};
 
@@ -98,9 +164,15 @@ int main(void) {
 
     set_parents(tree, tree);
     tree_visualize(tree);
+
+    pfile = fopen("hahahehe.txt", "w");
+    IS_NULL_PTR(pfile);
+    print_node(tree);
+    fclose(pfile);
+
     tree_dtor(&tree);
     return 0;
-} 
+ } 
 
 
 
@@ -201,6 +273,11 @@ element_info * parse_str_lexically(size_t len) {
     parsed_program[size].type = zero_t;
     return parsed_program;
 }
+
+
+
+
+
 
 
 

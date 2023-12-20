@@ -138,6 +138,7 @@ void print_tex_single_equation(diff_tree_element * root, FILE * pfile);
 
 double tree_eval(diff_tree_element * element, double x_value);
 
+bool op_priority(double op1, double op2);
 
 #define ELEM_OP_NUM element->value.operator_info.op_number
 #define ELEM_DOUBLE element->value.number

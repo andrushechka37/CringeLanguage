@@ -5,8 +5,8 @@
 #include "recursive_down.h"
 #include "frontend.h"
 
-#define IS_ELEM(type, value) (TYPE_OF_TOKEN == type && VALUE_OF_TOKEN == value)
-
+#define IS_TOKEN(type, value) (TYPE_OF_TOKEN == type && VALUE_OF_TOKEN == value)
+// \n after body of func
 int token_num = 0;
 FILE * plog = NULL;
 
@@ -54,11 +54,11 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
     return val;
 
 static diff_tree_element * get_long_op(token_array * parsed_program) {
-    if (IS_ELEM(operator_t, OP_SIN)) {
+    if (IS_TOKEN(operator_t, OP_SIN)) {
 
         CREATE_LONG_OP_NODE(SIN(get_subexpression(parsed_program)));
 
-    } else if (IS_ELEM(operator_t, OP_COS)) {
+    } else if (IS_TOKEN(operator_t, OP_COS)) {
 
         CREATE_LONG_OP_NODE(COS(get_subexpression(parsed_program)));
 
@@ -73,7 +73,7 @@ static diff_tree_element * get_long_op(token_array * parsed_program) {
 #undef CREATE_LONG_OP_NODE
 
 static diff_tree_element * get_bracket(token_array * parsed_program) {
-    if (IS_ELEM(syntax_t, OP_ROUND_O)) {
+    if (IS_TOKEN(syntax_t, OP_ROUND_O)) {
 
         CHECK_BRACKET(OP_ROUND_O)
 
@@ -97,7 +97,7 @@ static diff_tree_element * get_pow(token_array * parsed_program) {
 
     diff_tree_element * value = get_bracket(parsed_program);
 
-    while (IS_ELEM(operator_t, OP_POW)) {
+    while (IS_TOKEN(operator_t, OP_POW)) {
 
         token_num++; // skip ^
 
@@ -114,7 +114,7 @@ static diff_tree_element * get_mul_or_div(token_array * parsed_program) {
  
     diff_tree_element * value = get_pow(parsed_program);
 
-    while (IS_ELEM(operator_t, OP_MUL) || IS_ELEM(operator_t, OP_DIV)) {
+    while (IS_TOKEN(operator_t, OP_MUL) || IS_TOKEN(operator_t, OP_DIV)) {
 
         int op = VALUE_OF_TOKEN; // typedef
         token_num++; // skip op
@@ -146,7 +146,7 @@ static diff_tree_element * get_subexpression(token_array * parsed_program) {
 
     diff_tree_element * value = get_mul_or_div(parsed_program);
 
-    while (IS_ELEM(operator_t, OP_ADD) || IS_ELEM(operator_t, OP_SUB)) {
+    while (IS_TOKEN(operator_t, OP_ADD) || IS_TOKEN(operator_t, OP_SUB)) {
 
         int op = VALUE_OF_TOKEN;
         token_num++; // skip op
@@ -189,7 +189,7 @@ diff_tree_element * get_expression(token_array * parsed_program) {
 
     diff_tree_element * value = get_subexpression(parsed_program);
 
-    if (!IS_ELEM(syntax_t, OP_END)) {
+    if (!IS_TOKEN(syntax_t, OP_END)) {
 
         diff_tree_element * right = NULL;
 
@@ -234,22 +234,22 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program);
                                                                                                \
     cur_node = func;
 
-
 diff_tree_element * get_operators(token_array * parsed_program) {
-    diff_tree_element * value = NULL;
+    diff_tree_element * value = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
     diff_tree_element * cur_node = NULL;
+    diff_tree_element * original = value;
 
-    while (!IS_ELEM(syntax_t, OP_FIG_C)) {
+    while (!IS_TOKEN(syntax_t, OP_FIG_C)) {
 
-        if (IS_ELEM(syntax_t, OP_IF)) { 
+        if (IS_TOKEN(syntax_t, OP_IF)) { 
 
             CREATE_OP_NODE(IF(condition, body));
 
-        } else if (IS_ELEM(syntax_t, OP_WHILE)) {
+        } else if (IS_TOKEN(syntax_t, OP_WHILE)) {
 
             CREATE_OP_NODE(WHILE(condition, body));
 
-        } else if (IS_ELEM(syntax_t, OP_FIG_O)){
+        } else if (IS_TOKEN(syntax_t, OP_FIG_O)){
 
             PRINT_REPORT("# complex case, call get single part of program");
 
@@ -262,24 +262,31 @@ diff_tree_element * get_operators(token_array * parsed_program) {
             cur_node = get_expression(parsed_program);
         }
 
-        value = node_ctor(OP_END, syntax_t, value, cur_node, NULL);
+        value->left = cur_node;
+        if (!IS_TOKEN(syntax_t, OP_FIG_C)) {
+        value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
+        value = value->right;
+        }
     }
 
     PRINT_REPORT("#### while ends");
+    //tree_dtor((&value));
     
-    return value;
+    return original;
 }
 
 
 diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
+
     diff_tree_element * cur_node = NULL;
-    diff_tree_element * value = NULL;
+    diff_tree_element * value = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
+    diff_tree_element * original = value;
 
     PRINT_REPORT("in get_single_part_of_program");
 
     bool is_figure_bracket = 0;
 
-    while (IS_ELEM(syntax_t, OP_FIG_O)) {
+    while (IS_TOKEN(syntax_t, OP_FIG_O)) {
 
         is_figure_bracket = 1;
 
@@ -291,7 +298,9 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
         PRINT_REPORT("## got one");
 
-        value = node_ctor(OP_END, syntax_t, value, cur_node, NULL);
+        value->left = cur_node;
+        value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
+        value = value->right;
     } 
 
     if (is_figure_bracket == 0){
@@ -299,9 +308,10 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
         value = get_operators(parsed_program);
 
         PRINT_REPORT("## get_operators ends its work");
+        return value;
     }
-    
-    return value;
+
+    return original;
 }
 
 
