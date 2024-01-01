@@ -34,25 +34,25 @@ in get_long_op, call get_variable:   ip = 1, type: 3, value: 7777
 in get_variable, got variable   ip = 2, type: 2, value: 17
 
 
-in get_subexpression, call get_mul_or_div:   ip = 3, type: 1, value: 7
+in get_subexpression, call get_mul_or_div:   ip = 3, type: 1, value: 76
 
 
-in get_mul_or_div, call get_pow:   ip = 3, type: 1, value: 7
+in get_mul_or_div, call get_pow:   ip = 3, type: 1, value: 76
 
 
-in get_pow, call get_bracket:   ip = 3, type: 1, value: 7
+in get_pow, call get_bracket:   ip = 3, type: 1, value: 76
 
 
-in get_bracket, call get_long_op:   ip = 3, type: 1, value: 7
+in get_bracket, call get_long_op:   ip = 3, type: 1, value: 76
 
 
-in get_long_op, call get_variable:   ip = 3, type: 1, value: 7
+in get_long_op, call get_variable:   ip = 3, type: 1, value: 76
 
 
-in get_variable, call get_number:   ip = 3, type: 1, value: 7
+in get_variable, call get_number:   ip = 3, type: 1, value: 76
 
 
-in get_number   ip = 3, type: 1, value: 7
+in get_number   ip = 3, type: 1, value: 76
 
 
 #### while ends   ip = 5, type: 4, value: 53

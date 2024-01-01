@@ -20,13 +20,14 @@ static int get_number(int * ip);
 
 void print_node(diff_tree_element * element);
 
-#define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && ELEM_OP_NUM == value_of_node)
+
+
+#define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && element->value.operator_info.op_number == value_of_node)
 
 #define NULL_ELEM            \
     if (element == NULL) {   \
         return;              \
     }
-
 
 void print_complex_expression(diff_tree_element * element) {
 
@@ -40,7 +41,7 @@ void print_complex_expression(diff_tree_element * element) {
 
         fprintf(pfile, " {\n", get_op_symbol(ELEM_OP_NUM));
         print_node(element->right);
-        fprintf(pfile, "\n}\n");
+        fprintf(pfile, "}\n");
 
      } else {
 
@@ -62,30 +63,29 @@ void print_complex_expression(diff_tree_element * element) {
     return;
 }
 
+#define CHECK_END(element) (element && (IS_ELEM(element, syntax_t, OP_END)))
+
 void print_node(diff_tree_element * element) {
 
     NULL_ELEM;
 
     if (IS_ELEM(element, syntax_t, OP_END)) {
-        printf("print new body of  ;\n");
 
         print_node(element->left);
-
-        printf("left is printed\n");
 
         if (!(element->left && (IS_ELEM(element->left, syntax_t, OP_WHILE) || 
                                 IS_ELEM(element->left, syntax_t, OP_IF)))) {
 
-            if (!(IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {   // not to print junk nodes(senicolon->semicolon)
-                if (!((element->left && (IS_ELEM(element->left, syntax_t, OP_END))) &&
-                   ((element->right && (IS_ELEM(element->right, syntax_t, OP_END)))))) {
-                    fprintf(pfile, ";\n");
+            if (!(IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {   // not to print junk nodes([;] <- [;] <- [;] -> [smth])
+
+                if (!(CHECK_END(element->left) && CHECK_END(element->right))) {       // not to print ([;] <- [;] -> [;])
+                    fprintf(pfile, ";\n");                                            // separated for better understanding
                 }
             }
         }
 
         print_node(element->right);
-
+        
     } else if (ELEM_TYPE == value_t) {
 
         fprintf(pfile,"%.2lg", ELEM_DOUBLE);
@@ -102,28 +102,6 @@ void print_node(diff_tree_element * element) {
 }
 
 
-void tree_delete_semicolon(diff_tree_element * element) {
-
-    NULL_ELEM;
-
-    tree_delete_semicolon(element->left);
-
-    if (element->left && IS_ELEM(element, syntax_t, OP_END) && IS_ELEM(element->left, syntax_t, OP_END) && !(element->right)) {
-
-        diff_tree_element * left = element->left;
-
-        element->left = element->left->left;
-
-        single_node_dtor(&left);
-
-    }
-
-    tree_delete_semicolon(element->right);
-
-    return;
-}
-
-
 int main(void) {         
     size_t len = read_program();
     token_array parsed_program = {};
@@ -134,10 +112,7 @@ int main(void) {
 
     diff_tree_element * tree = get_program(&parsed_program);
     set_parents(tree, tree);
-    
-    // tree_visualize(tree);
-    // tree_delete_semicolon(tree);
-    
+
     tree_visualize(tree);
 
     pfile = fopen("hahahehe.txt", "w");
@@ -159,12 +134,14 @@ int main(void) {
 #include <unistd.h>
 
 static int get_size_of_file(FILE * file) {
+
     struct stat buff;
     fstat(fileno(file), &buff);
     return buff.st_size;
 }
 
 int read_program(char file[]) {
+
     FILE * pfile = fopen(file, "r");
 
     int len = get_size_of_file(pfile);
@@ -176,31 +153,37 @@ int read_program(char file[]) {
 }
 
 static void set_token(types_of_node type, double value, element_info * elem, char name[]) {
+
     elem->number = value;
     elem->type = type;
     strcpy(elem->name, name);
 }
 
 static void get_word(int * ip, char * op) {
-        int i = 0;
-        while (('a' <= program[*ip] && program[*ip] <= 'z') || program[*ip] == '_') { // opname len check 
-            op[i] = program[*ip];                        // sscanf
-            i++;    
-            (*ip)++;
 
-            if (i > OP_NAME_LEN) {
-                printf("name len overflow\n");
-                return;
-            }
+    int i = 0;
+
+    while (('a' <= program[*ip] && program[*ip] <= 'z') || program[*ip] == '_') { // opname len check 
+        op[i] = program[*ip];                        // sscanf
+        i++;    
+        (*ip)++;
+
+        if (i > OP_NAME_LEN) {
+            printf("name len overflow\n");
+            return;
         }
+    }
 }
 
 static int get_number(int * ip) {    // sscanf // %n
+
     int value = 0;
+
     while ('0' <= program[*ip] && program[*ip] <= '9') {
         value = value * 10 + program[*ip] - '0';
         (*ip)++;
     }
+
     return value;
 }
 
@@ -245,20 +228,9 @@ element_info * parse_str_lexically(size_t len) {
         printf("%d   ,%d-type %lg-value,  %s- name\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
         size++;
     }
+
     parsed_program[size].type = zero_t;
+    
     return parsed_program;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
