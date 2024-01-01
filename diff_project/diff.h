@@ -34,3 +34,6 @@ void consts_eval(diff_tree_element * element);
 void delete_fictive_nodes(diff_tree_element * element);
 void tree_simplify(diff_tree_element * element);
 void set_parents(diff_tree_element * root, diff_tree_element * parent);
+
+void throw_away_node(diff_tree_element * element, char junk_side);
+void single_node_dtor(elem_ptr * element);

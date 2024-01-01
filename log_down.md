@@ -34,25 +34,25 @@ in get_long_op, call get_variable:   ip = 1, type: 3, value: 7777
 in get_variable, got variable   ip = 2, type: 2, value: 17
 
 
-in get_subexpression, call get_mul_or_div:   ip = 3, type: 1, value: 5
+in get_subexpression, call get_mul_or_div:   ip = 3, type: 1, value: 7
 
 
-in get_mul_or_div, call get_pow:   ip = 3, type: 1, value: 5
+in get_mul_or_div, call get_pow:   ip = 3, type: 1, value: 7
 
 
-in get_pow, call get_bracket:   ip = 3, type: 1, value: 5
+in get_pow, call get_bracket:   ip = 3, type: 1, value: 7
 
 
-in get_bracket, call get_long_op:   ip = 3, type: 1, value: 5
+in get_bracket, call get_long_op:   ip = 3, type: 1, value: 7
 
 
-in get_long_op, call get_variable:   ip = 3, type: 1, value: 5
+in get_long_op, call get_variable:   ip = 3, type: 1, value: 7
 
 
-in get_variable, call get_number:   ip = 3, type: 1, value: 5
+in get_variable, call get_number:   ip = 3, type: 1, value: 7
 
 
-in get_number   ip = 3, type: 1, value: 5
+in get_number   ip = 3, type: 1, value: 7
 
 
 #### while ends   ip = 5, type: 4, value: 53
@@ -289,31 +289,31 @@ in get_long_op, call get_variable:   ip = 28, type: 3, value: 7777
 in get_variable, got variable   ip = 29, type: 4, value: 62
 
 
-### int get_single_part_of_program call get expression   ip = 30, type: 1, value: 7.8787e+07
+### int get_single_part_of_program call get expression   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get expression, call get subexpression   ip = 30, type: 1, value: 7.8787e+07
+in get expression, call get subexpression   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_subexpression, call get_mul_or_div:   ip = 30, type: 1, value: 7.8787e+07
+in get_subexpression, call get_mul_or_div:   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_mul_or_div, call get_pow:   ip = 30, type: 1, value: 7.8787e+07
+in get_mul_or_div, call get_pow:   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_pow, call get_bracket:   ip = 30, type: 1, value: 7.8787e+07
+in get_pow, call get_bracket:   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_bracket, call get_long_op:   ip = 30, type: 1, value: 7.8787e+07
+in get_bracket, call get_long_op:   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_long_op, call get_variable:   ip = 30, type: 1, value: 7.8787e+07
+in get_long_op, call get_variable:   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_variable, call get_number:   ip = 30, type: 1, value: 7.8787e+07
+in get_variable, call get_number:   ip = 30, type: 1, value: 7.87869e+07
 
 
-in get_number   ip = 30, type: 1, value: 7.8787e+07
+in get_number   ip = 30, type: 1, value: 7.87869e+07
 
 
 #### while ends   ip = 32, type: 4, value: 53
@@ -371,5 +371,8 @@ in get_number   ip = 33, type: 1, value: 5
 
 
 ## got one   ip = 36, type: -1, value: 0
+
+
+# end is ok   ip = 36, type: -1, value: 0
 
 

@@ -6,7 +6,7 @@
 #include "frontend.h"
 
 #define IS_TOKEN(type, value) (TYPE_OF_TOKEN == type && VALUE_OF_TOKEN == value)
-// \n after body of func
+
 int token_num = 0;
 FILE * plog = NULL;
 
@@ -34,6 +34,7 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
         PRINT_REPORT("in get_variable, got variable");
 
         return VAR;
+
     } else {
 
         PRINT_REPORT("in get_variable, call get_number:");
@@ -54,6 +55,7 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
     return val;
 
 static diff_tree_element * get_long_op(token_array * parsed_program) {
+
     if (IS_TOKEN(operator_t, OP_SIN)) {
 
         CREATE_LONG_OP_NODE(SIN(get_subexpression(parsed_program)));
@@ -73,6 +75,7 @@ static diff_tree_element * get_long_op(token_array * parsed_program) {
 #undef CREATE_LONG_OP_NODE
 
 static diff_tree_element * get_bracket(token_array * parsed_program) {
+
     if (IS_TOKEN(syntax_t, OP_ROUND_O)) {
 
         CHECK_BRACKET(OP_ROUND_O)
@@ -83,6 +86,7 @@ static diff_tree_element * get_bracket(token_array * parsed_program) {
         CHECK_BRACKET(OP_ROUND_C);
 
         return value;
+
     } else {
 
         PRINT_REPORT("in get_bracket, call get_long_op:");
@@ -106,10 +110,12 @@ static diff_tree_element * get_pow(token_array * parsed_program) {
         diff_tree_element * value2 = get_bracket(parsed_program);
         value = POW(value, value2);
     }
+
     return value;
 }
 
 static diff_tree_element * get_mul_or_div(token_array * parsed_program) { 
+
     PRINT_REPORT("in get_mul_or_div, call get_pow:");
  
     diff_tree_element * value = get_pow(parsed_program);
@@ -138,6 +144,7 @@ static diff_tree_element * get_mul_or_div(token_array * parsed_program) {
                 break;
         }
     }
+
     return value;
 }
 
@@ -219,6 +226,14 @@ diff_tree_element * get_expression(token_array * parsed_program) {
 
 #undef CREATE_EXPRESSION_NODE
 
+
+
+//-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 diff_tree_element * get_single_part_of_program(token_array * parsed_program);
 
 #define CREATE_OP_NODE(func)                                                                   \
@@ -233,6 +248,11 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program);
     diff_tree_element * body = get_single_part_of_program(parsed_program);                     \
                                                                                                \
     cur_node = func;
+
+// создается cur_node к ней привязывается в лево след 
+// а указатель привязки сдвигается на правого ребенка cur node 
+// чтобы не создавать лишнюю ; node для связки итогового выражения 
+//  полученного из get_operators
 
 diff_tree_element * get_operators(token_array * parsed_program) {
     diff_tree_element * value = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
@@ -249,7 +269,7 @@ diff_tree_element * get_operators(token_array * parsed_program) {
 
             CREATE_OP_NODE(WHILE(condition, body));
 
-        } else if (IS_TOKEN(syntax_t, OP_FIG_O)){
+        } else if (IS_TOKEN(syntax_t, OP_FIG_O)) {
 
             PRINT_REPORT("# complex case, call get single part of program");
 
@@ -279,7 +299,7 @@ diff_tree_element * get_operators(token_array * parsed_program) {
 diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
     diff_tree_element * cur_node = NULL;
-    diff_tree_element * value = node_ctor(OP_SIN, syntax_t, NULL, NULL, NULL);
+    diff_tree_element * value = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
     diff_tree_element * original = value;
 
     PRINT_REPORT("in get_single_part_of_program");
@@ -299,9 +319,12 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
         PRINT_REPORT("## got one");
 
         value->left = cur_node;
+
         if (IS_TOKEN(syntax_t, OP_FIG_O)) {
-            value->right = node_ctor(OP_FIG_C, syntax_t, NULL, NULL, NULL);
+
+            value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
             value = value->right;
+
         }
     } 
 
@@ -319,6 +342,11 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
 #undef CREATE_OP_NODE
 
+
+//-------------------------------------------------------------------------------------------------------
+
+
+
 diff_tree_element * get_program(token_array * parsed_program) {
 
     plog = fopen("log_down.md", "w");
@@ -328,6 +356,8 @@ diff_tree_element * get_program(token_array * parsed_program) {
     diff_tree_element * value = get_single_part_of_program(parsed_program);
 
     if (TYPE_OF_TOKEN == zero_t) {
+
+        PRINT_REPORT("# end is ok");
 
         fclose(plog);
 

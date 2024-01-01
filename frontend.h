@@ -32,3 +32,4 @@ int read_program(char file[] = "program.txt");
     }  
 
 int is_func_name(char name[]);
+element_info * parse_str_lexically(size_t len);

@@ -125,13 +125,18 @@ void single_node_dtor(elem_ptr * element) {
 
 void throw_away_node(diff_tree_element * element, char junk_side) {
     if (junk_side == 'R') {
+
         tree_dtor(&(RIGHT_CHILD)); // define maybe
+
         element->type = LEFT_CHILD->type;
         element->value = LEFT_CHILD->value;
+
         RIGHT_CHILD = LEFT_CHILD->right;
         diff_tree_element * left =LEFT_CHILD;
         LEFT_CHILD = LEFT_CHILD->left;
+
         single_node_dtor(&(left));
+
     } else if (junk_side == 'L') {
         tree_dtor(&(LEFT_CHILD));
         element->type = RIGHT_CHILD->type;
