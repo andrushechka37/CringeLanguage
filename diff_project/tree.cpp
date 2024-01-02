@@ -57,17 +57,26 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
 
     diff_tree_element * element = (diff_tree_element *) calloc(1, sizeof(diff_tree_element));
     element->type = type;
+
     switch (type) {
-    case value_t:
-        ELEM_DOUBLE = value;
-        break;
-    case operator_t:
-        ELEM_OP_NUM = (operations) value;
-        element->value.operator_info.arg_quantity = get_op_arg_number((operations) value);
-        break;
-    case syntax_t:
-        ELEM_OP_NUM = (operations) value;
+        case value_t:
+            ELEM_DOUBLE = value;
+            break;
+
+        case operator_t:
+            ELEM_OP_NUM = (operations) value;
+            element->value.operator_info.arg_quantity = get_op_arg_number((operations) value);
+            break;
+
+        case syntax_t:
+            ELEM_OP_NUM = (operations) value;
+            break;
+        
+        case variable_t:
+            ELEM_DOUBLE = value;
+            break;
     }
+
     element->left = left;
     element->right = right;
     element->parent = parent;

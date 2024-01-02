@@ -13,7 +13,14 @@ struct token_array {
 
 struct variables {
     int value;
-    char * name;
+    char name[OP_NAME_LEN];
+};
+
+const int VARIABLE_COUNT = 20;
+
+struct variables_info {
+    variables table[VARIABLE_COUNT]; 
+    int size = 0;
 };
 
 

@@ -27,11 +27,13 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
 
     if (TYPE_OF_TOKEN == variable_t) {
 
+        PRINT_REPORT("# in get_variable, got variable");
+
+        diff_tree_element * var = node_ctor(VALUE_OF_TOKEN, variable_t, NULL, NULL, NULL);
+
         token_num++;
 
-        PRINT_REPORT("in get_variable, got variable");
-
-        return VAR;
+        return var;
 
     } else {
 
@@ -369,7 +371,7 @@ diff_tree_element * get_program(token_array * parsed_program) {
         fclose(plog);
 
         return value;
-        
+
     } else {
 
         PRINT_REPORT("## end of program is wrong")
@@ -379,11 +381,6 @@ diff_tree_element * get_program(token_array * parsed_program) {
         return NULL;
     }
 }
-
-
-
-
-
 
 
 

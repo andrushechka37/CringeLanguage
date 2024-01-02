@@ -10,6 +10,7 @@
 #include <string.h>
 
 FILE * pfile = NULL;
+variables_info variables_table;
 
 static int get_size_of_file(FILE * file);
 
@@ -19,8 +20,6 @@ static void get_word(int * ip, char * op);
 static int get_number(int * ip);
 
 void print_node(diff_tree_element * element);
-
-
 
 #define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && element->value.operator_info.op_number == value_of_node)
 
@@ -92,20 +91,28 @@ void print_node(diff_tree_element * element) {
 
     } else if (ELEM_TYPE == variable_t) {
 
-        fprintf(pfile, "xxx");
+        printf("%d\n", (int)element->value.number);
+        fprintf(pfile, "%s", variables_table.table[(int)element->value.number].name);
 
     } else {
 
         print_complex_expression(element);
-
     }
 }
 
+void print_to_file(diff_tree_element * element) {
+
+    pfile = fopen("c_program.txt", "w");
+
+    print_node(element);
+    fclose(pfile);
+}
 
 int main(void) {         
     size_t len = read_program();
     token_array parsed_program = {};
-
+    variables_table.size = 0;
+    
     parsed_program.tokens = parse_str_lexically(len);
 
     printf("--------------------------\n");
@@ -115,10 +122,7 @@ int main(void) {
 
     tree_visualize(tree);
 
-    pfile = fopen("hahahehe.txt", "w");
-    IS_NULL_PTR(pfile);
-    print_node(tree);
-    fclose(pfile);
+    print_to_file(tree);
 
     tree_dtor(&tree);
     return 0;
@@ -180,11 +184,38 @@ static int get_number(int * ip) {    // sscanf // %n
     int value = 0;
 
     while ('0' <= program[*ip] && program[*ip] <= '9') {
+
         value = value * 10 + program[*ip] - '0';
         (*ip)++;
+
     }
 
     return value;
+}
+
+#define VAR_NUM (variables_table.size)
+
+static int set_variable(char name[]) {
+
+    int i = 0;
+    while (i < variables_table.size) {
+
+        if (strcmp(name, variables_table.table[i].name) == 0) {
+            return i;
+        }
+        i++;
+    }
+
+    strcpy(variables_table.table[VAR_NUM].name, name); // not safe
+    variables_table.table[VAR_NUM].value = VAR_NUM;
+
+    VAR_NUM++;
+    
+    if (VAR_NUM > VARIABLE_COUNT) {
+        printf("!!!!!!!!!!!!!!!!!!too much variables");
+    }
+    
+    return VAR_NUM - 1;
 }
 
       
@@ -212,17 +243,23 @@ element_info * parse_str_lexically(size_t len) {
             get_word(&ip, op);
                 
             if (is_func_name(op) != -1) {
+
                 create_right_token(is_func_name(op), op);
+                
             } else {
-                create_token(variable_t, 7777, op);
+
+                int num = set_variable(op);
+                
+                create_token(variable_t, num, op);
             }
 
-
         } else {
+
             char op[2] = "";
             op[0] = cur_char;
             create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
+
         }
 
         printf("%d   ,%d-type %lg-value,  %s- name\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
@@ -230,7 +267,7 @@ element_info * parse_str_lexically(size_t len) {
     }
 
     parsed_program[size].type = zero_t;
-    
+
     return parsed_program;
 }
 
