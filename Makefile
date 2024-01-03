@@ -13,7 +13,7 @@ CXXFLAGS =  -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-
    -Wstack-usage=8192 -fsanitize=address -fsanitize=undefined -fPIE -Werror=vla
 
 
-.PHONY: tree
+
 akinator: tree.o deff_dump.o diff.o recursive_down.o frontend.o
 	clang++ tree.o deff_dump.o diff.o recursive_down.o frontend.o $(CXXFLAGS) -o deff && ./deff
 deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tree.h
@@ -28,3 +28,13 @@ recursive_down.o: recursive_down.cpp recursive_down.h
 	clang++ -c recursive_down.cpp
 frontend.o: frontend.cpp recursive_down.h diff_project/diff.cpp diff_project/diff.h diff_project/tree.h frontend.h
 	clang++ -c frontend.cpp
+
+
+back: tree.o backend.o deff_dump.o
+	clang++ tree.o  backend.o deff_dump.o $(CXXFLAGS) -o deff && ./deff
+tree.o: diff_project/tree.cpp diff_project/tree.h
+	clang++ -c diff_project/tree.cpp
+backend.o: backend.cpp
+	clang++ -c backend.cpp
+deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tree.h
+	clang++ -c diff_project/deff_dump.cpp

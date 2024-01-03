@@ -100,12 +100,54 @@ void print_node(diff_tree_element * element) {
     }
 }
 
-void print_to_file(diff_tree_element * element) {
+void print_to_file_c_program(diff_tree_element * element) {
 
     pfile = fopen("c_program.txt", "w");
 
     print_node(element);
     fclose(pfile);
+}
+
+void print_inorder(diff_tree_element * element, FILE * in_file) {
+
+    if (element == NULL) {     
+        fprintf(in_file, "_");
+        return;
+    }
+
+    fprintf(in_file, "(");
+    print_inorder(element->left, in_file);
+
+            
+            if (ELEM_TYPE == value_t) {
+
+                fprintf(in_file,"%lg", element->value);
+
+            } else if (ELEM_TYPE == variable_t) {
+
+                printf("%d\n", (int)element->value.number);
+                fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
+
+            } else {
+
+                fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
+            }
+        
+    
+    
+    print_inorder(element->right, in_file);
+    fprintf(in_file,")");
+
+    return;
+}
+
+int print_inorder_program(diff_tree_element * element) {
+    FILE * in_file = fopen("in_program.txt", "w");
+    IS_NULL_PTR(in_file);
+
+    print_inorder(element, in_file);
+
+    fclose(in_file);
 }
 
 int main(void) {         
@@ -121,8 +163,11 @@ int main(void) {
     set_parents(tree, tree);
 
     tree_visualize(tree);
+    tree_visualize(tree);
 
-    print_to_file(tree);
+    print_to_file_c_program(tree);
+
+    print_inorder_program(tree);
 
     tree_dtor(&tree);
     return 0;
@@ -270,4 +315,14 @@ element_info * parse_str_lexically(size_t len) {
 
     return parsed_program;
 }
+
+
+
+
+
+
+
+
+
+
 

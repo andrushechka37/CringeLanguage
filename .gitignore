@@ -21,3 +21,8 @@ frontend
 frontend.dSYM
 rules_of_my_life.txt
 c_program.txt
+program.txt
+backend.dSYM
+backend
+in_program.txt
+log_down.md
