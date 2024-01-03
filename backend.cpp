@@ -5,32 +5,13 @@
 #include "recursive_down.h"
 #include "diff_project/deff_dump.h"
 #include "frontend.h"
+#include "backend.h"
 #include <ctype.h>
 
 #include <math.h>
 #include <string.h>
 
-static bool check_symbol(char symbol, FILE * pfile) {
-
-    bool is_found = 1;
-    char check_char = getc(pfile);
-
-    if (check_char != symbol) {                           
-        ungetc(check_char, pfile);        
-        is_found = 0;                                         
-    } 
-
-    check_char = getc(pfile); 
-
-    if (check_char != '\n') {                            
-        ungetc(check_char, pfile);          
-    }
-    
-    return is_found;
-}
-
-#define LEFT &((*element)->left)
-#define RIGHT &((*element)->right)
+static bool check_symbol(char symbol, FILE * pfile);
 
 void set_type_value(diff_tree_element * element, double number, types_of_node type) {
 
@@ -46,6 +27,9 @@ void set_type_value(diff_tree_element * element, double number, types_of_node ty
 
     element->type = type;
 }
+
+#define LEFT &((*element)->left)
+#define RIGHT &((*element)->right)
 
 int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
@@ -66,18 +50,17 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
         } else {
 
             fscanf(in_file, "%[^_(]s", &op);
-            printf("%s, %d\n", op, is_func_name(op));
+
+            //printf("%s, %d\n", op, is_func_name(op));
 
             if (is_func_name(op) != -1) {
 
-                if (is_func_name(op) >= OP_FIG_C) {
-                    set_type_value(*element, is_func_name(op), syntax_t);
-                } else {
-                    set_type_value(*element, is_func_name(op), operator_t);
-                }
+                SET_RIGHT_TYPE_VALUE(is_func_name(op));
 
             } else {
+
                 set_type_value(*element, 1, variable_t);
+                
             }
         }
 
@@ -109,12 +92,32 @@ diff_tree_element * read_tree() {
 }
 
 int main(void) {
-    diff_tree_element * hui = read_tree();
-    tree_visualize(hui);
+
+    diff_tree_element * tree = read_tree();
+
+    tree_visualize(tree);
+
     return 0;
 }
 
+static bool check_symbol(char symbol, FILE * pfile) {
 
+    bool is_found = 1;
+    char check_char = getc(pfile);
+
+    if (check_char != symbol) {                           
+        ungetc(check_char, pfile);        
+        is_found = 0;                                         
+    } 
+
+    check_char = getc(pfile); 
+
+    if (check_char != '\n') {                            
+        ungetc(check_char, pfile);          
+    }
+    
+    return is_found;
+}
 
 
 

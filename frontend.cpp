@@ -5,6 +5,9 @@
 #include "diff_project/deff_dump.h"
 #include "frontend.h"
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <math.h>
 #include <string.h>
@@ -19,99 +22,15 @@ static void set_token(types_of_node type, double value, element_info * elem, cha
 static void get_word(int * ip, char * op);
 static int get_number(int * ip);
 
-void print_node(diff_tree_element * element);
-
-#define IS_ELEM(element, type_of_node, value_of_node) (element->type == type_of_node && element->value.operator_info.op_number == value_of_node)
-
-#define NULL_ELEM            \
-    if (element == NULL) {   \
-        return;              \
-    }
-
-void print_complex_expression(diff_tree_element * element) {
-
-     NULL_ELEM;
-
-     if (IS_ELEM(element, syntax_t, OP_IF) || IS_ELEM(element, syntax_t, OP_WHILE)) {
-
-        fprintf(pfile, "%s (", get_op_symbol(ELEM_OP_NUM));
-        print_node(element->left);
-        fprintf(pfile, ")");
-
-        fprintf(pfile, " {\n", get_op_symbol(ELEM_OP_NUM));
-        print_node(element->right);
-        fprintf(pfile, "}\n");
-
-     } else {
-
-        if (IS_ROUND_BRACKET) {
-            fprintf(pfile,"(");
-        }
-
-        print_node(element->left);
-
-        fprintf(pfile, " %s ", get_op_symbol(ELEM_OP_NUM));
-
-        print_node(element->right);
-
-        if (IS_ROUND_BRACKET) {
-            fprintf(pfile,")");
-        }
-    }
-
-    return;
-}
-
-#define CHECK_END(element) (element && (IS_ELEM(element, syntax_t, OP_END)))
-
-void print_node(diff_tree_element * element) {
-
-    NULL_ELEM;
-
-    if (IS_ELEM(element, syntax_t, OP_END)) {
-
-        print_node(element->left);
-
-        if (!(element->left && (IS_ELEM(element->left, syntax_t, OP_WHILE) || 
-                                IS_ELEM(element->left, syntax_t, OP_IF)))) {
-
-            if (!(IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {   // not to print junk nodes([;] <- [;] <- [;] -> [smth])
-
-                if (!(CHECK_END(element->left) && CHECK_END(element->right))) {       // not to print ([;] <- [;] -> [;])
-                    fprintf(pfile, ";\n");                                            // separated for better understanding
-                }
-            }
-        }
-
-        print_node(element->right);
-        
-    } else if (ELEM_TYPE == value_t) {
-
-        fprintf(pfile,"%.2lg", ELEM_DOUBLE);
-
-    } else if (ELEM_TYPE == variable_t) {
-
-        printf("%d\n", (int)element->value.number);
-        fprintf(pfile, "%s", variables_table.table[(int)element->value.number].name);
-
-    } else {
-
-        print_complex_expression(element);
-    }
-}
-
-void print_to_file_c_program(diff_tree_element * element) {
-
-    pfile = fopen("c_program.txt", "w");
-
-    print_node(element);
-    fclose(pfile);
-}
-
 void print_inorder(diff_tree_element * element, FILE * in_file) {
 
     if (element == NULL) {     
         fprintf(in_file, "_");
+        return;
+    }
+
+    if (element->left && (IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {
+        print_inorder(element->left, in_file);
         return;
     }
 
@@ -171,16 +90,87 @@ int main(void) {
 
     tree_dtor(&tree);
     return 0;
- } 
+} 
 
+void print_to_file_c_program(diff_tree_element * element) {
 
+    pfile = fopen("c_program.txt", "w");
 
+    print_node(element);
+    fclose(pfile);
+}
 
+#define CHECK_END(element) (element && (IS_ELEM(element, syntax_t, OP_END)))
 
+void print_node(diff_tree_element * element) {
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+    NULL_ELEM;
+
+    if (IS_ELEM(element, syntax_t, OP_END)) {
+
+        print_node(element->left);
+
+        if (!(element->left && (IS_ELEM(element->left, syntax_t, OP_WHILE) || 
+                                IS_ELEM(element->left, syntax_t, OP_IF)))) {
+
+            if (!(IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {   // not to print junk nodes([;] <- [;] <- [;] -> [smth])
+
+                if (!(CHECK_END(element->left) && CHECK_END(element->right))) {       // not to print ([;] <- [;] -> [;])
+                    fprintf(pfile, ";\n");                                            // separated for better understanding
+                }
+            }
+        }
+
+        print_node(element->right);
+        
+    } else if (ELEM_TYPE == value_t) {
+
+        fprintf(pfile,"%.2lg", ELEM_DOUBLE);
+
+    } else if (ELEM_TYPE == variable_t) {
+
+        printf("%d\n", (int)element->value.number);
+        fprintf(pfile, "%s", variables_table.table[(int)element->value.number].name);
+
+    } else {
+
+        print_complex_expression(element);
+    }
+}
+
+void print_complex_expression(diff_tree_element * element) {
+
+     NULL_ELEM;
+
+     if (IS_ELEM(element, syntax_t, OP_IF) || IS_ELEM(element, syntax_t, OP_WHILE)) {
+
+        fprintf(pfile, "%s (", get_op_symbol(ELEM_OP_NUM));
+        print_node(element->left);
+        fprintf(pfile, ")");
+
+        fprintf(pfile, " {\n", get_op_symbol(ELEM_OP_NUM));
+        print_node(element->right);
+        fprintf(pfile, "}\n");
+
+     } else {
+
+        if (IS_ROUND_BRACKET) {
+            fprintf(pfile,"(");
+        }
+
+        print_node(element->left);
+
+        fprintf(pfile, " %s ", get_op_symbol(ELEM_OP_NUM));
+
+        print_node(element->right);
+
+        if (IS_ROUND_BRACKET) {
+            fprintf(pfile,")");
+        }
+    }
+
+    return;
+}
 
 static int get_size_of_file(FILE * file) {
 
