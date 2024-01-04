@@ -7,7 +7,6 @@
 
 static bool check_symbol(char symbol, FILE * pfile);
 static int set_type_and_value(double value, types_of_node type, diff_tree_element * element);
-static int get_op_arg_number(operations op);
 
 op_names_numbers_t op_names_numbers[OP_COUNT] = {
         {OP_ADD,      "+",       2},
@@ -212,9 +211,14 @@ double tree_eval(diff_tree_element * element, double x_value) {
     }
 }
 
-static int get_op_arg_number(operations op) {
+int get_op_arg_number(operations op) {
     int i = 0;
-    while (op != op_names_numbers[i].number) i++;
+    while (op != op_names_numbers[i].number) {
+        if (i > FUNCS_COUNT) {
+            return -1;
+        }
+        i++;
+    }
     return op_names_numbers[i].arg_quantity;
 }
 

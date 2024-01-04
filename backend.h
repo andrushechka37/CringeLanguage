@@ -7,3 +7,6 @@
     } else {                                          \
         set_type_value(*element, func, operator_t);   \
     }
+
+diff_tree_element * read_tree();
+int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent);

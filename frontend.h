@@ -6,6 +6,7 @@ struct element_info {
     double number;
     char name[OP_NAME_LEN];
 };
+
 struct token_array {
     element_info * tokens;
     int size;

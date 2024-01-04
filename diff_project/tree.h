@@ -140,6 +140,8 @@ double tree_eval(diff_tree_element * element, double x_value);
 
 bool op_priority(double op1, double op2);
 
+int get_op_arg_number(operations op);
+
 #define ELEM_OP_NUM element->value.operator_info.op_number
 #define ELEM_DOUBLE element->value.number
 #define ELEM_OP_ARG element->value.operator_info.arg_quantity

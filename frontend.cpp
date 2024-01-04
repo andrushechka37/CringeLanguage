@@ -113,7 +113,7 @@ void print_node(diff_tree_element * element) {
         if (!(element->left && (IS_ELEM(element->left, syntax_t, OP_WHILE) || 
                                 IS_ELEM(element->left, syntax_t, OP_IF)))) {
 
-            if (!(IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {   // not to print junk nodes([;] <- [;] <- [;] -> [smth])
+            if (!(IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {   // not to print junk nodes([smth] <- [;] <- [;] -> [smth])
 
                 if (!(CHECK_END(element->left) && CHECK_END(element->right))) {       // not to print ([;] <- [;] -> [;])
                     fprintf(pfile, ";\n");                                            // separated for better understanding
@@ -135,6 +135,7 @@ void print_node(diff_tree_element * element) {
     } else {
 
         print_complex_expression(element);
+
     }
 }
 
@@ -177,6 +178,7 @@ static int get_size_of_file(FILE * file) {
     struct stat buff;
     fstat(fileno(file), &buff);
     return buff.st_size;
+
 }
 
 int read_program(char file[]) {
@@ -196,6 +198,7 @@ static void set_token(types_of_node type, double value, element_info * elem, cha
     elem->number = value;
     elem->type = type;
     strcpy(elem->name, name);
+    
 }
 
 static void get_word(int * ip, char * op) {

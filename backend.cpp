@@ -13,17 +13,230 @@
 
 static bool check_symbol(char symbol, FILE * pfile);
 static int set_variable(char name[]);
+static void set_type_value(diff_tree_element * element, double number, types_of_node type);
+
 variables_info variables_table;
 
-void set_type_value(diff_tree_element * element, double number, types_of_node type) {
+int LABEL_NUMBER = 0;
 
-    if (type == variable_t || type == value_t) {
-        element->value.number = number;
-    } else {
-        element->value.operator_info.op_number = (operations)number;
+void print_single_command(diff_tree_element * element, FILE * pfile) {
+
+    if (element == NULL) {
+        return;
     }
 
-    element->type = type;
+    if (ELEM_OP_ARG == 2) {
+
+        print_single_command(element->left, pfile);
+        print_single_command(element->right, pfile);
+
+        switch (ELEM_OP_NUM) {
+
+            case OP_ADD:
+                fprintf(pfile, "add\n");
+                break;
+
+            case OP_SUB:
+                fprintf(pfile, "sub\n");
+                break;
+
+            case OP_MUL:
+                fprintf(pfile, "mul\n");
+                break;
+            
+            case OP_DIV:
+                fprintf(pfile, "div\n");
+                break;
+            
+            default:
+                printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);
+                break;
+
+        }
+
+    } else if (ELEM_OP_ARG == 1) {
+
+        print_single_command(element->right, pfile);
+
+        switch (ELEM_OP_NUM) {
+
+            case OP_SIN:
+                fprintf(pfile, "sin\n");
+                break;
+
+            case OP_COS:
+                fprintf(pfile, "cos\n");
+                break;
+
+            case OP_SQRT:
+                fprintf(pfile, "sqrt\n"); // is not working in recursive down, remove pow instead of sqrt
+                break;
+            
+            default:
+                printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);
+                break;
+
+            }
+
+    } else {
+        
+        if (ELEM_TYPE == value_t) {
+
+            fprintf(pfile, "push %d\n", (int)ELEM_DOUBLE);
+
+        } else if (ELEM_TYPE == variable_t) {
+
+            if (IS_ELEM(element->parent, syntax_t, OP_EQUAL)) {
+                fprintf(pfile, "pop r%cx\n", (int)ELEM_DOUBLE + 'a');
+            } else {
+                fprintf(pfile, "push r%cx\n", (int)ELEM_DOUBLE + 'a'); // pop or push think
+            }
+
+        } else {
+
+            if (ELEM_OP_NUM == OP_END) {
+
+                print_single_command(element->left, pfile);
+                print_single_command(element->right, pfile);
+
+            } else if (ELEM_OP_NUM == OP_EQUAL) {
+
+                print_single_command(element->right, pfile);
+                print_single_command(element->left, pfile);
+                
+            } else if (ELEM_OP_NUM == OP_IF || ELEM_OP_NUM == OP_WHILE) {
+
+                int begin = LABEL_NUMBER;
+                fprintf(pfile, ":%d\n", begin);
+
+                LABEL_NUMBER++;
+                
+                print_single_command(element->left->left, pfile);
+                print_single_command(element->left->right, pfile);
+
+                switch (element->left->value.operator_info.op_number) {
+                
+                case OP_EQUAL:
+                    fprintf(pfile, "jne :%d\n", LABEL_NUMBER); // are changed to opposite commands,
+                    break;                                     // because jump happens in opposite case
+
+                case OP_MORE:
+                    fprintf(pfile, "jbe :%d\n", LABEL_NUMBER);
+                    break;
+
+                case OP_LESS:
+                    fprintf(pfile, "jae :%d\n", LABEL_NUMBER);
+                    break;
+                
+                default:
+                    printf("unknown arg - %d, 985698!!!!!!!\n", element->left->value.operator_info.op_number);
+                    break;
+                }
+
+                print_single_command(element->right, pfile);
+
+                fprintf(pfile, "jmp :%d\n", begin);
+
+                fprintf(pfile, ":%d\n", LABEL_NUMBER);
+                LABEL_NUMBER++;
+                
+            } else {
+                printf("dfkjvhjkdfhkjhdfkj");
+            }
+        }
+    }
+}
+
+void print_asm_code(diff_tree_element * element) {
+
+    FILE * pfile = fopen("asm.txt", "w");
+    if (pfile == NULL) {
+        printf("null ptr pfile");
+        return;
+    }
+
+    print_single_command(element, pfile);
+
+    fprintf(pfile, "out\n");
+    fprintf(pfile, "hlt\n");
+
+    fclose(pfile);
+    return;
+}
+
+
+
+
+
+int main(void) {
+    variables_table.size = 0;
+    diff_tree_element * tree = read_tree();
+
+    //tree_visualize(tree);
+    print_asm_code(tree);
+
+    return 0;
+}
+
+static bool check_symbol(char symbol, FILE * pfile) {
+
+    bool is_found = 1;
+    char check_char = getc(pfile);
+
+    if (check_char != symbol) {                           
+        ungetc(check_char, pfile);        
+        is_found = 0;                                         
+    } 
+
+    check_char = getc(pfile); 
+
+    if (check_char != '\n') {                            
+        ungetc(check_char, pfile);          
+    }
+    
+    return is_found;
+}
+
+#define VAR_NUM (variables_table.size)
+
+// was taken from frontend, think about it, where to put it
+static int set_variable(char name[]) {
+
+    int i = 0;
+    while (i < variables_table.size) {
+
+        if (strcmp(name, variables_table.table[i].name) == 0) {
+            return i;
+        }
+        i++;
+    }
+
+    strcpy(variables_table.table[VAR_NUM].name, name); // not safe
+    variables_table.table[VAR_NUM].value = VAR_NUM;
+
+    VAR_NUM++;
+    
+    if (VAR_NUM > VARIABLE_COUNT) {
+        printf("!!!!!!!!!!!!!!!!!!too much variables");
+    }
+    
+    return VAR_NUM - 1;
+}
+
+diff_tree_element * read_tree() {
+
+    FILE * in_file = fopen("in_program.txt", "r");
+    if (in_file == NULL) {
+        printf("null ptr");
+        return NULL;
+    }
+
+    diff_tree_element * element = NULL;
+
+    build_tree(&element, in_file, &element);
+
+    fclose(in_file);
+    return element;
 }
 
 #define LEFT &((*element)->left)
@@ -56,6 +269,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
                 SET_RIGHT_TYPE_VALUE(is_func_name(op));
 
             } else {
+
                 int num = set_variable(op);
 
                 set_type_value(*element, num, variable_t);
@@ -74,76 +288,16 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
     }
 }
 
-diff_tree_element * read_tree() {
+static void set_type_value(diff_tree_element * element, double number, types_of_node type) {
 
-    FILE * in_file = fopen("in_program.txt", "r");
-    if (in_file == NULL) {
-        printf("null ptr");
-        return NULL;
+    if (type == variable_t || type == value_t) {
+        element->value.number = number;
+    } else {
+        element->value.operator_info.op_number = (operations)number;
+        element->value.operator_info.arg_quantity = get_op_arg_number(element->value.operator_info.op_number);
     }
 
-    diff_tree_element * element = NULL;
-
-    build_tree(&element, in_file, &element);
-
-    fclose(in_file);
-    return element;
+    element->type = type;
 }
-
-int main(void) {
-    variables_table.size = 0;
-    diff_tree_element * tree = read_tree();
-
-    tree_visualize(tree);
-
-    return 0;
-}
-
-static bool check_symbol(char symbol, FILE * pfile) {
-
-    bool is_found = 1;
-    char check_char = getc(pfile);
-
-    if (check_char != symbol) {                           
-        ungetc(check_char, pfile);        
-        is_found = 0;                                         
-    } 
-
-    check_char = getc(pfile); 
-
-    if (check_char != '\n') {                            
-        ungetc(check_char, pfile);          
-    }
-    
-    return is_found;
-}
-
-#define VAR_NUM (variables_table.size)
-
-static int set_variable(char name[]) {
-
-    int i = 0;
-    while (i < variables_table.size) {
-
-        if (strcmp(name, variables_table.table[i].name) == 0) {
-            return i;
-        }
-        i++;
-    }
-
-    strcpy(variables_table.table[VAR_NUM].name, name); // not safe
-    variables_table.table[VAR_NUM].value = VAR_NUM;
-
-    VAR_NUM++;
-    
-    if (VAR_NUM > VARIABLE_COUNT) {
-        printf("!!!!!!!!!!!!!!!!!!too much variables");
-    }
-    
-    return VAR_NUM - 1;
-}
-
-
-
 
 
