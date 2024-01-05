@@ -24,12 +24,14 @@ static int get_number(int * ip);
 
 void print_inorder(diff_tree_element * element, FILE * in_file) {
 
-    if (element == NULL) {     
+    if (element == NULL) { 
+
         fprintf(in_file, "_");
         return;
     }
 
     if (element->left && (IS_ELEM(element->left, syntax_t, OP_END) && !(element->right))) {
+
         print_inorder(element->left, in_file);
         return;
     }
@@ -37,23 +39,20 @@ void print_inorder(diff_tree_element * element, FILE * in_file) {
     fprintf(in_file, "(");
     print_inorder(element->left, in_file);
 
-            
-            if (ELEM_TYPE == value_t) {
+    if (ELEM_TYPE == value_t) {
 
-                fprintf(in_file,"%lg", element->value);
+        fprintf(in_file,"%lg", element->value);
 
-            } else if (ELEM_TYPE == variable_t) {
+    } else if (ELEM_TYPE == variable_t) {
 
-                printf("%d\n", (int)element->value.number);
-                fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
+        printf("%d\n", (int)element->value.number);
+        fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
 
-            } else {
+    } else {
 
-                fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
-            }
+        fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
+    }
         
-    
-    
     print_inorder(element->right, in_file);
     fprintf(in_file,")");
 
@@ -61,6 +60,7 @@ void print_inorder(diff_tree_element * element, FILE * in_file) {
 }
 
 int print_inorder_program(diff_tree_element * element) {
+
     FILE * in_file = fopen("in_program.txt", "w");
     IS_NULL_PTR(in_file);
 
@@ -69,7 +69,8 @@ int print_inorder_program(diff_tree_element * element) {
     fclose(in_file);
 }
 
-int main(void) {         
+int main(void) {
+
     size_t len = read_program();
     token_array parsed_program = {};
     variables_table.size = 0;
@@ -135,7 +136,7 @@ void print_node(diff_tree_element * element) {
     } else {
 
         print_complex_expression(element);
-
+        
     }
 }
 
