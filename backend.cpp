@@ -51,7 +51,6 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
             default:
                 printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);
                 break;
-
         }
 
     } else if (ELEM_OP_ARG == 1) {
@@ -75,7 +74,6 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
             default:
                 printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);
                 break;
-
             }
 
     } else {
@@ -273,7 +271,6 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
                 int num = set_variable(op);
 
                 set_type_value(*element, num, variable_t);
-
             }
         }
 

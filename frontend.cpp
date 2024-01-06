@@ -12,9 +12,6 @@
 #include <math.h>
 #include <string.h>
 
-FILE * pfile = NULL;
-variables_info variables_table;
-
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem, char name[]);
@@ -22,10 +19,12 @@ static void set_token(types_of_node type, double value, element_info * elem, cha
 static void get_word(int * ip, char * op);
 static int get_number(int * ip);
 
+FILE * pfile = NULL;
+variables_info variables_table;
+
 void print_inorder(diff_tree_element * element, FILE * in_file) {
 
     if (element == NULL) { 
-
         fprintf(in_file, "_");
         return;
     }
@@ -49,7 +48,6 @@ void print_inorder(diff_tree_element * element, FILE * in_file) {
         fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
 
     } else {
-
         fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
     }
         
@@ -96,6 +94,10 @@ int main(void) {
 void print_to_file_c_program(diff_tree_element * element) {
 
     pfile = fopen("c_program.txt", "w");
+    if (pfile == NULL) {
+        printf("open error\n");
+        return;
+    }
 
     print_node(element);
     fclose(pfile);
@@ -136,7 +138,6 @@ void print_node(diff_tree_element * element) {
     } else {
 
         print_complex_expression(element);
-        
     }
 }
 
@@ -179,7 +180,6 @@ static int get_size_of_file(FILE * file) {
     struct stat buff;
     fstat(fileno(file), &buff);
     return buff.st_size;
-
 }
 
 int read_program(char file[]) {
@@ -190,6 +190,7 @@ int read_program(char file[]) {
     program = (char *) calloc(len, sizeof(char));
 
     fread(program, sizeof(char), len, pfile);
+
     fclose(pfile);
     return len;
 }
@@ -199,7 +200,6 @@ static void set_token(types_of_node type, double value, element_info * elem, cha
     elem->number = value;
     elem->type = type;
     strcpy(elem->name, name);
-    
 }
 
 static void get_word(int * ip, char * op) {
@@ -223,10 +223,8 @@ static int get_number(int * ip) {    // sscanf // %n
     int value = 0;
 
     while ('0' <= program[*ip] && program[*ip] <= '9') {
-
         value = value * 10 + program[*ip] - '0';
         (*ip)++;
-
     }
 
     return value;
@@ -238,7 +236,6 @@ static int set_variable(char name[]) {
 
     int i = 0;
     while (i < variables_table.size) {
-
         if (strcmp(name, variables_table.table[i].name) == 0) {
             return i;
         }
@@ -267,10 +264,11 @@ element_info * parse_str_lexically(size_t len) {
     int size = 0;
     
     while (cur_char != '\0') {
+
         if (isspace(cur_char) != 0) {
 
             ip++;
-            continue;      // нужно ли единство стиля?
+            continue;
 
         } else if (isdigit(cur_char) != 0) {                   
                                  
@@ -298,7 +296,6 @@ element_info * parse_str_lexically(size_t len) {
             op[0] = cur_char;
             create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
-
         }
 
         printf("%d   ,%d-type %lg-value,  %s- name\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);

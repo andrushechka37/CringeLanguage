@@ -30,7 +30,6 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
         PRINT_REPORT("# in get_variable, got variable");
 
         diff_tree_element * var = node_ctor(VALUE_OF_TOKEN, variable_t, NULL, NULL, NULL);
-
         token_num++;
 
         return var;
@@ -70,7 +69,6 @@ static diff_tree_element * get_long_op(token_array * parsed_program) {
         PRINT_REPORT("in get_long_op, call get_variable:");
 
         return get_variable(parsed_program);
-
     }
 }
 
@@ -331,12 +329,10 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
             value->right = node_ctor(OP_END, syntax_t, NULL, NULL, NULL);
             value = value->right;
-
         }
     } 
 
     if (is_figure_bracket == 0){
-
         value = get_operators(parsed_program);
 
         PRINT_REPORT("## get_operators ends its work");
@@ -369,15 +365,13 @@ diff_tree_element * get_program(token_array * parsed_program) {
         PRINT_REPORT("# end is ok");
 
         fclose(plog);
-
         return value;
 
     } else {
-
+        
         PRINT_REPORT("## end of program is wrong")
 
         fclose(plog);
-
         return NULL;
     }
 }
