@@ -9,8 +9,8 @@ inline int error_status = 0;
 #pragma clang diagnostic pop
 
 const int OP_NAME_LEN = 50;
-const int OP_COUNT = 18;
-const int FUNCS_COUNT = 18;
+const int OP_COUNT = 19;
+const int FUNCS_COUNT = 19;
 const int OP_PRIORITY_MASK = 240;
 const char NIL = '_';
 
@@ -38,7 +38,8 @@ enum operations {
     OP_MORE    = 59,
     OP_LESS    = 60,
     OP_EQUAL   = 61,
-    OP_END     = 62
+    OP_END     = 62,
+    OP_FUNC    = 63
 };
 
 struct op_info {
@@ -56,7 +57,8 @@ enum types_of_node {
     value_t    = 1,
     operator_t = 2,
     variable_t = 3,
-    syntax_t   = 4
+    syntax_t   = 4,
+    function_t = 5
 };
 
 struct diff_tree_element {

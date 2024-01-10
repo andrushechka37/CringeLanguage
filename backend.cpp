@@ -12,7 +12,7 @@
 #include <string.h>
 
 static bool check_symbol(char symbol, FILE * pfile);
-static int set_variable(char name[]);
+static int put_name_to_table(char name[]);
 static void set_type_value(diff_tree_element * element, double number, types_of_node type);
 
 variables_info variables_table;
@@ -198,7 +198,7 @@ static bool check_symbol(char symbol, FILE * pfile) {
 #define VAR_NUM (variables_table.size)
 
 // was taken from frontend, think about it, where to put it
-static int set_variable(char name[]) {
+static int put_name_to_table(char name[]) {
 
     int i = 0;
     while (i < variables_table.size) {
@@ -268,7 +268,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
             } else {
 
-                int num = set_variable(op);
+                int num = put_name_to_table(op);
 
                 set_type_value(*element, num, variable_t);
             }

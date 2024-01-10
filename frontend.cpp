@@ -77,17 +77,17 @@ int main(void) {
 
     printf("--------------------------\n");
 
-    diff_tree_element * tree = get_program(&parsed_program);
-    set_parents(tree, tree);
+    // diff_tree_element * tree = get_program(&parsed_program);
+    // set_parents(tree, tree);
 
-    tree_visualize(tree);
-    tree_visualize(tree);
+    // tree_visualize(tree);
+    // tree_visualize(tree);
 
-    print_to_file_c_program(tree);
+    // print_to_file_c_program(tree);
 
-    print_inorder_program(tree);
+    // print_inorder_program(tree);
 
-    tree_dtor(&tree);
+    // tree_dtor(&tree);
     return 0;
 } 
 
@@ -232,7 +232,7 @@ static int get_number(int * ip) {    // sscanf // %n
 
 #define VAR_NUM (variables_table.size)
 
-static int set_variable(char name[]) {
+static int put_name_to_table(char name[]) {
 
     int i = 0;
     while (i < variables_table.size) {
@@ -276,7 +276,7 @@ element_info * parse_str_lexically(size_t len) {
                                                            
         } else if (isalpha(cur_char) != 0) { // non letters are restricted
 
-            char op[OP_NAME_LEN] = "";
+            char op[OP_NAME_LEN] = "";      // for operators consisted of letters, variables and functions
             get_word(&ip, op);
                 
             if (is_func_name(op) != -1) {
@@ -284,15 +284,22 @@ element_info * parse_str_lexically(size_t len) {
                 create_right_token(is_func_name(op), op);
                 
             } else {
+                if (parsed_program[size - 1].type == syntax_t && parsed_program[size - 1].number == OP_FUNC) {
 
-                int num = set_variable(op);
-                
-                create_token(variable_t, num, op);
+                    int num = put_name_to_table(op);
+                    create_token(function_t, num, op);
+
+                } else {
+
+                    int num = put_name_to_table(op);
+                    
+                    create_token(variable_t, num, op);
+                }
             }
 
         } else {
 
-            char op[2] = "";
+            char op[2] = ""; // for non letters operators or brackets
             op[0] = cur_char;
             create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
@@ -306,14 +313,3 @@ element_info * parse_str_lexically(size_t len) {
 
     return parsed_program;
 }
-
-
-
-
-
-
-
-
-
-
-
