@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 
+// TODO: strange things in node_ctor(unions and double arguments are mixed)
 
 static bool check_symbol(char symbol, FILE * pfile);
 static int set_type_and_value(double value, types_of_node type, diff_tree_element * element);
@@ -73,6 +74,9 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
             break;
         
         case variable_t:
+            ELEM_DOUBLE = value;
+            break;
+        case function_t:
             ELEM_DOUBLE = value;
             break;
     }

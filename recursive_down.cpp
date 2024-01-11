@@ -9,6 +9,7 @@ int token_num = 0;
 FILE * plog = NULL;
 
 static diff_tree_element * get_subexpression(token_array * parsed_program);
+diff_tree_element * get_program(token_array * parsed_program, FILE * file);
 
 static diff_tree_element * get_number(token_array * parsed_program) {
 
@@ -21,6 +22,27 @@ static diff_tree_element * get_number(token_array * parsed_program) {
     token_num++;
 
     return NUMBER_NODE(value);
+}
+
+static diff_tree_element * get_function(token_array * parsed_program) {
+
+    if (IS_TOKEN(syntax_t, OP_FUNC)) {
+
+        token_num++; // skip $ token
+        token_num++; // skip func name token
+
+        PRINT_REPORT("# getting func");
+
+        diff_tree_element * func = get_program(parsed_program, plog);
+
+        return func;
+
+    } else {
+
+        PRINT_REPORT("in get_variable, call get_number:");
+
+        return get_number(parsed_program);
+    }
 }
 
 static diff_tree_element * get_variable(token_array * parsed_program) {
@@ -38,7 +60,7 @@ static diff_tree_element * get_variable(token_array * parsed_program) {
 
         PRINT_REPORT("in get_variable, call get_number:");
 
-        return get_number(parsed_program);
+        return get_function(parsed_program);
     }
 }
 
@@ -351,9 +373,9 @@ diff_tree_element * get_single_part_of_program(token_array * parsed_program) {
 
 
 
-diff_tree_element * get_program(token_array * parsed_program) {
+diff_tree_element * get_program(token_array * parsed_program, FILE * file) {
 
-    plog = fopen("log_down.md", "w");
+    plog = file;
     IS_NULL_PTR(plog);
 
     PRINT_REPORT("in get program, call get operator:");
@@ -363,15 +385,14 @@ diff_tree_element * get_program(token_array * parsed_program) {
     if (TYPE_OF_TOKEN == zero_t) {
 
         PRINT_REPORT("# end is ok");
+        token_num++; // skip end of func
 
-        fclose(plog);
         return value;
 
     } else {
         
         PRINT_REPORT("## end of program is wrong")
 
-        fclose(plog);
         return NULL;
     }
 }

@@ -3,7 +3,7 @@
 #include "frontend.h"
 
 
-diff_tree_element * get_program(token_array * parsed_program);
+diff_tree_element * get_program(token_array * parsed_program, FILE * file);
 
 #define print_log(text, spec) fprintf(plog, text, spec)
 

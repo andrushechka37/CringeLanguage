@@ -71,6 +71,7 @@ struct diff_tree_element {
 
 struct diff_tree {
     diff_tree_element * root;
+    diff_tree_element * funcs_bodies[FUNCS_COUNT];
     int size;
 };
 

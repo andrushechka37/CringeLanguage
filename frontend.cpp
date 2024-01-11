@@ -12,6 +12,11 @@
 #include <math.h>
 #include <string.h>
 
+
+// TODO: there is some sort of copypast(for letters and symbols two different if's) can cause problems
+// TODO: end of funcs is are separated from the main (zero_t is putted in two places
+// TODO: names of operators should not be in token
+
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem, char name[]);
@@ -77,17 +82,21 @@ int main(void) {
 
     printf("--------------------------\n");
 
-    // diff_tree_element * tree = get_program(&parsed_program);
-    // set_parents(tree, tree);
+    FILE * file = fopen("log_down.md", "w");
 
-    // tree_visualize(tree);
-    // tree_visualize(tree);
+    diff_tree_element * tree = get_program(&parsed_program, file);
+
+    fclose(file);
+    set_parents(tree, tree);
+
+    tree_visualize(tree);
+    tree_visualize(tree);
 
     // print_to_file_c_program(tree);
 
     // print_inorder_program(tree);
 
-    // tree_dtor(&tree);
+    //tree_dtor(&tree);
     return 0;
 } 
 
@@ -254,6 +263,7 @@ static int put_name_to_table(char name[]) {
     return VAR_NUM - 1;
 }
 
+#define IS_PARSED_TOKEN(typee, value) (parsed_program[size].type == typee && parsed_program[size].number == value)
       
 element_info * parse_str_lexically(size_t len) {
 
@@ -262,6 +272,7 @@ element_info * parse_str_lexically(size_t len) {
 
     int ip = 0;
     int size = 0;
+    int is_end_of_func = 0;
     
     while (cur_char != '\0') {
 
@@ -272,7 +283,7 @@ element_info * parse_str_lexically(size_t len) {
 
         } else if (isdigit(cur_char) != 0) {                   
                                  
-            create_token(value_t, get_number(&ip), "0");        
+            create_token(value_t, get_number(&ip), "number");        
                                                            
         } else if (isalpha(cur_char) != 0) { // non letters are restricted
 
@@ -288,6 +299,7 @@ element_info * parse_str_lexically(size_t len) {
 
                     int num = put_name_to_table(op);
                     create_token(function_t, num, op);
+                    is_end_of_func++;
 
                 } else {
 
@@ -303,13 +315,22 @@ element_info * parse_str_lexically(size_t len) {
             op[0] = cur_char;
             create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
+
+            if (IS_PARSED_TOKEN(syntax_t, OP_FIG_C) && is_end_of_func) {
+
+                is_end_of_func--;
+
+                printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
+                size++;
+                create_token(zero_t, -1, "end of func");
+            }
         }
 
-        printf("%d   ,%d-type %lg-value,  %s- name\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
+        printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
         size++;
     }
 
-    parsed_program[size].type = zero_t;
+    create_token(zero_t, -1, "end of func");
 
     return parsed_program;
 }
