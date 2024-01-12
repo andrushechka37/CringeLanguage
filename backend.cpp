@@ -150,6 +150,11 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                 fprintf(pfile, ":%d\n", LABEL_NUMBER);
                 LABEL_NUMBER++;
                 
+            } else if (ELEM_OP_NUM == OP_PRINT) {
+
+                print_single_command(element->right, pfile, funcs);
+                fprintf(pfile, "out\n");
+
             } else {
                 printf("dfkjvhjkdfhkjhdfkj");
             }
@@ -170,7 +175,6 @@ void print_asm_code(diff_tree_element * element) {
 
     print_single_command(element, pfile, funcs);
 
-    fprintf(pfile, "out\n"); // out is strange
     fprintf(pfile, "hlt\n");
 
     for (int i = 0; i < FUNCS_QUANTITY; i++) {

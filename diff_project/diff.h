@@ -21,6 +21,8 @@
 #define SIN(arg) node_ctor(OP_SIN, operator_t, NULL, arg, NULL)
 #define COS(arg) node_ctor(OP_COS, operator_t, NULL, arg, NULL)
 
+#define PRINT(arg) node_ctor(OP_PRINT, syntax_t, NULL, arg, NULL)
+
 #define COPY_L copy_node(element->left)
 #define COPY_R copy_node(element->right)
 

@@ -5,6 +5,8 @@
 #include "recursive_down.h"
 #include "frontend.h"
 
+// TODO: variable->func (strange)
+
 int token_num = 0;
 FILE * plog = NULL;
 
@@ -88,6 +90,10 @@ static diff_tree_element * get_long_op(token_array * parsed_program) {
     } else if (IS_TOKEN(operator_t, OP_COS)) {
 
         CREATE_LONG_OP_NODE(COS(get_subexpression(parsed_program)));
+
+    } else if (IS_TOKEN(syntax_t, OP_PRINT)) {
+
+        CREATE_LONG_OP_NODE(PRINT(get_variable(parsed_program)));
 
     } else {
 
