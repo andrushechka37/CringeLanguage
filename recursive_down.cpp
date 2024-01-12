@@ -29,11 +29,14 @@ static diff_tree_element * get_function(token_array * parsed_program) {
     if (IS_TOKEN(syntax_t, OP_FUNC)) {
 
         token_num++; // skip $ token
+        diff_tree_element * func = node_ctor(VALUE_OF_TOKEN, function_t, NULL, NULL, NULL);
         token_num++; // skip func name token
 
         PRINT_REPORT("# getting func");
 
-        diff_tree_element * func = get_program(parsed_program, plog);
+        if (IS_TOKEN(syntax_t, OP_FIG_O)) {
+            func->right = get_program(parsed_program, plog);
+        }
 
         return func;
 

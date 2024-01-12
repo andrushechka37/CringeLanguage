@@ -52,6 +52,10 @@ void print_inorder(diff_tree_element * element, FILE * in_file) {
         printf("%d\n", (int)element->value.number);
         fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
 
+    } else if (ELEM_TYPE == function_t) {
+
+        fprintf(in_file, "$%s", variables_table.table[(int)element->value.number].name);
+
     } else {
         fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
     }
@@ -92,11 +96,11 @@ int main(void) {
     tree_visualize(tree);
     tree_visualize(tree);
 
-    // print_to_file_c_program(tree);
+    print_to_file_c_program(tree);
 
-    // print_inorder_program(tree);
+    print_inorder_program(tree);
 
-    //tree_dtor(&tree);
+    tree_dtor(&tree);
     return 0;
 } 
 
@@ -144,6 +148,16 @@ void print_node(diff_tree_element * element) {
         printf("%d\n", (int)element->value.number);
         fprintf(pfile, "%s", variables_table.table[(int)element->value.number].name);
 
+    } else if (ELEM_TYPE == function_t) {
+
+        fprintf(pfile, "%s", variables_table.table[(int)element->value.number].name);
+
+        if (element->right != NULL) {
+            fprintf(pfile, " {\n");
+            print_node(element->right);
+            fprintf(pfile, "\n}\n");
+        }
+
     } else {
 
         print_complex_expression(element);
@@ -183,6 +197,10 @@ void print_complex_expression(diff_tree_element * element) {
 
     return;
 }
+
+
+
+
 
 static int get_size_of_file(FILE * file) {
 
@@ -295,6 +313,7 @@ element_info * parse_str_lexically(size_t len) {
                 create_right_token(is_func_name(op), op);
                 
             } else {
+
                 if (parsed_program[size - 1].type == syntax_t && parsed_program[size - 1].number == OP_FUNC) {
 
                     int num = put_name_to_table(op);

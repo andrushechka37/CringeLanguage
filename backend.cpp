@@ -11,6 +11,10 @@
 #include <math.h>
 #include <string.h>
 
+
+// TODO: copypast of funcs of frontend, make file with common funcs
+// TODO: i don't like build tree function
+
 static bool check_symbol(char symbol, FILE * pfile);
 static int put_name_to_table(char name[]);
 static void set_type_value(diff_tree_element * element, double number, types_of_node type);
@@ -19,7 +23,7 @@ variables_info variables_table;
 
 int LABEL_NUMBER = 0;
 
-void print_single_command(diff_tree_element * element, FILE * pfile) {
+void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_element * funcs[]) {
 
     if (element == NULL) {
         return;
@@ -27,8 +31,8 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
 
     if (ELEM_OP_ARG == 2) {
 
-        print_single_command(element->left, pfile);
-        print_single_command(element->right, pfile);
+        print_single_command(element->left, pfile, funcs);
+        print_single_command(element->right, pfile, funcs);
 
         switch (ELEM_OP_NUM) {
 
@@ -55,7 +59,7 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
 
     } else if (ELEM_OP_ARG == 1) {
 
-        print_single_command(element->right, pfile);
+        print_single_command(element->right, pfile, funcs);
 
         switch (ELEM_OP_NUM) {
 
@@ -90,17 +94,25 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
                 fprintf(pfile, "push r%cx\n", (int)ELEM_DOUBLE + 'a'); // pop or push think
             }
 
+        } else if (ELEM_TYPE == function_t) {
+
+            if (element->right == NULL) {
+                fprintf(pfile, "call :%lg\n", element->value.number);
+            } else {
+                funcs[(int)element->value.number] = element->right;
+            }
+
         } else {
 
             if (ELEM_OP_NUM == OP_END) {
 
-                print_single_command(element->left, pfile);
-                print_single_command(element->right, pfile);
+                print_single_command(element->left, pfile, funcs);
+                print_single_command(element->right, pfile, funcs);
 
             } else if (ELEM_OP_NUM == OP_EQUAL) {
 
-                print_single_command(element->right, pfile);
-                print_single_command(element->left, pfile);
+                print_single_command(element->right, pfile, funcs);
+                print_single_command(element->left, pfile, funcs);
                 
             } else if (ELEM_OP_NUM == OP_IF || ELEM_OP_NUM == OP_WHILE) {
 
@@ -109,8 +121,8 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
 
                 LABEL_NUMBER++;
                 
-                print_single_command(element->left->left, pfile);
-                print_single_command(element->left->right, pfile);
+                print_single_command(element->left->left, pfile, funcs);
+                print_single_command(element->left->right, pfile, funcs);
 
                 switch (element->left->value.operator_info.op_number) {
                 
@@ -131,7 +143,7 @@ void print_single_command(diff_tree_element * element, FILE * pfile) {
                     break;
                 }
 
-                print_single_command(element->right, pfile);
+                print_single_command(element->right, pfile, funcs);
 
                 fprintf(pfile, "jmp :%d\n", begin);
 
@@ -152,11 +164,22 @@ void print_asm_code(diff_tree_element * element) {
         printf("null ptr pfile");
         return;
     }
+    const int FUNCS_QUANTITY = 20;
 
-    print_single_command(element, pfile);
+    diff_tree_element * funcs[FUNCS_QUANTITY] = {};            // magic const
 
-    fprintf(pfile, "out\n");
+    print_single_command(element, pfile, funcs);
+
+    fprintf(pfile, "out\n"); // out is strange
     fprintf(pfile, "hlt\n");
+
+    for (int i = 0; i < FUNCS_QUANTITY; i++) {
+        if (funcs[i] != NULL) {
+            fprintf(pfile, "\n\n\n:%d\n", i);
+            print_single_command(funcs[i], pfile, funcs);
+            fprintf(pfile, "ret\n\n\n\n");
+        }
+    }
 
     fclose(pfile);
     return;
@@ -170,7 +193,7 @@ int main(void) {
     variables_table.size = 0;
     diff_tree_element * tree = read_tree();
 
-    //tree_visualize(tree);
+    tree_visualize(tree);
     print_asm_code(tree);
 
     return 0;
@@ -258,19 +281,30 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
         } else {
 
-            fscanf(in_file, "%[^_(]s", &op);
-
-            //printf("%s, %d\n", op, is_func_name(op));
-
-            if (is_func_name(op) != -1) {
-
-                SET_RIGHT_TYPE_VALUE(is_func_name(op));
+            if (check_symbol('$', in_file) == 1) {  // skip $ if it is
+            
+                printf("jhbfjh\n");
+                fscanf(in_file, "%[^_(]s", &op);
+                printf("%s - \n", op);
+                int num = put_name_to_table(op);
+                printf("%d\n", num);
+                set_type_value(*element, num, function_t);
 
             } else {
+                fscanf(in_file, "%[^_(]s", &op);
 
-                int num = put_name_to_table(op);
+                //printf("%s, %d\n", op, is_func_name(op));
 
-                set_type_value(*element, num, variable_t);
+                if (is_func_name(op) != -1) {
+
+                    SET_RIGHT_TYPE_VALUE(is_func_name(op));
+
+                } else {
+
+                    int num = put_name_to_table(op);
+
+                    set_type_value(*element, num, variable_t);
+                }
             }
         }
 
@@ -287,7 +321,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
 static void set_type_value(diff_tree_element * element, double number, types_of_node type) {
 
-    if (type == variable_t || type == value_t) {
+    if (type == variable_t || type == value_t || type == function_t) {
         element->value.number = number;
     } else {
         element->value.operator_info.op_number = (operations)number;
