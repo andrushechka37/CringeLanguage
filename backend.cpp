@@ -287,17 +287,13 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
             if (check_symbol('$', in_file) == 1) {  // skip $ if it is
             
-                printf("jhbfjh\n");
                 fscanf(in_file, "%[^_(]s", &op);
-                printf("%s - \n", op);
                 int num = put_name_to_table(op);
-                printf("%d\n", num);
                 set_type_value(*element, num, function_t);
 
             } else {
+                
                 fscanf(in_file, "%[^_(]s", &op);
-
-                //printf("%s, %d\n", op, is_func_name(op));
 
                 if (is_func_name(op) != -1) {
 

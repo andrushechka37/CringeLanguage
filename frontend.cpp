@@ -17,6 +17,12 @@
 // TODO: end of funcs is are separated from the main (zero_t is putted in two places
 // TODO: names of operators should not be in token
 
+
+// была ошибка в постановки ретерна в конце функции, теперь там чето типо стека смотрит за этим
+// в лексическом анализаторе не оч красиво это написано- переписать
+
+// + в три добавлен ретерн, нужный в рекурсии, + добавить его в бекенд;
+
 static int get_size_of_file(FILE * file);
 
 static void set_token(types_of_node type, double value, element_info * elem, char name[]);
@@ -290,7 +296,9 @@ element_info * parse_str_lexically(size_t len) {
 
     int ip = 0;
     int size = 0;
-    int is_end_of_func = 0;
+
+    int brackets[100] = {};
+    int brackets_ip = 0;
     
     while (cur_char != '\0') {
 
@@ -318,7 +326,6 @@ element_info * parse_str_lexically(size_t len) {
 
                     int num = put_name_to_table(op);
                     create_token(function_t, num, op);
-                    is_end_of_func++;
 
                 } else {
 
@@ -335,13 +342,23 @@ element_info * parse_str_lexically(size_t len) {
             create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
 
-            if (IS_PARSED_TOKEN(syntax_t, OP_FIG_C) && is_end_of_func) {
+            if (IS_PARSED_TOKEN(syntax_t, OP_FIG_C)) {
+                if (brackets[brackets_ip] == 1) {
+                    printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
+                    size++;
+                    create_token(zero_t, -1, "end of func");
+                }
+                brackets_ip--;
+            }
 
-                is_end_of_func--;
-
-                printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
-                size++;
-                create_token(zero_t, -1, "end of func");
+            if (IS_PARSED_TOKEN(syntax_t, OP_FIG_O)) {
+                if (parsed_program[size - 1].type == function_t) {
+                    brackets_ip++;
+                    brackets[brackets_ip] = 1;
+                } else {
+                    brackets_ip++;
+                    brackets[brackets_ip] = 0;
+                }
             }
         }
 
