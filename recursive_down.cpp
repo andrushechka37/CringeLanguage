@@ -26,6 +26,25 @@ static diff_tree_element * get_number(token_array * parsed_program) {
     return NUMBER_NODE(value);
 }
 
+static diff_tree_element * get_return(token_array * parsed_program) {
+
+    if (IS_TOKEN(syntax_t, OP_RET)) {
+
+        PRINT_REPORT("# in get_variable, got variable");
+
+        diff_tree_element * var = node_ctor(VALUE_OF_TOKEN, syntax_t, NULL, NULL, NULL);
+        token_num++;
+
+        return var;
+
+    } else {
+
+        PRINT_REPORT("in get_variable, call get_number:");
+
+        return get_number(parsed_program);
+    }
+}
+
 static diff_tree_element * get_function(token_array * parsed_program) {
 
     if (IS_TOKEN(syntax_t, OP_FUNC)) {
@@ -46,7 +65,7 @@ static diff_tree_element * get_function(token_array * parsed_program) {
 
         PRINT_REPORT("in get_variable, call get_number:");
 
-        return get_number(parsed_program);
+        return get_return(parsed_program);
     }
 }
 

@@ -300,7 +300,7 @@ element_info * parse_str_lexically(size_t len) {
     int brackets[100] = {};
     int brackets_ip = 0;
     
-    while (cur_char != '\0') {
+    while (ip < len) {
 
         if (isspace(cur_char) != 0) {
 
