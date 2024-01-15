@@ -17,7 +17,7 @@
 // TODO: end of funcs is are separated from the main (zero_t is putted in two places
 // TODO: names of operators should not be in token
 
-
+// TODO: REWRITE SCANF OF STR PARSE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -1-2-3---4-4-4
 // в лексическом анализаторе не оч красиво это написано- переписать
 
 static int get_size_of_file(FILE * file);
@@ -251,13 +251,19 @@ static void get_word(int * ip, char * op) {
 static int get_number(int * ip) {    // sscanf // %n
 
     int value = 0;
+    int sign = 1;
+
+    if (program[*ip] == '-') {
+        sign = -1;
+        (*ip)++;
+    }
 
     while ('0' <= program[*ip] && program[*ip] <= '9') {
         value = value * 10 + program[*ip] - '0';
         (*ip)++;
     }
 
-    return value;
+    return value * sign;
 }
 
 #define VAR_NUM (variables_table.size)

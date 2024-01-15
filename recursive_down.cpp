@@ -145,30 +145,31 @@ static diff_tree_element * get_bracket(token_array * parsed_program) {
     }
 }
 
-static diff_tree_element * get_pow(token_array * parsed_program) {
+static diff_tree_element * get_sqrt(token_array * parsed_program) {
 
     PRINT_REPORT("in get_pow, call get_bracket:");
 
-    diff_tree_element * value = get_bracket(parsed_program);
-
-    while (IS_TOKEN(operator_t, OP_POW)) {
+    if (IS_TOKEN(operator_t, OP_SQRT)) {
 
         token_num++; // skip ^
 
-        PRINT_REPORT("in get_pow, call get_bracket:");
+        CHECK_BRACKET(OP_ROUND_O)
+        diff_tree_element * value = get_bracket(parsed_program);
+        CHECK_BRACKET(OP_ROUND_C)
 
-        diff_tree_element * value2 = get_bracket(parsed_program);
-        value = POW(value, value2);
+        return SQRT(value);
+
+    } else {
+        
+        return get_bracket(parsed_program);
     }
-
-    return value;
 }
 
 static diff_tree_element * get_mul_or_div(token_array * parsed_program) { 
 
     PRINT_REPORT("in get_mul_or_div, call get_pow:");
  
-    diff_tree_element * value = get_pow(parsed_program);
+    diff_tree_element * value = get_sqrt(parsed_program);
 
     while (IS_TOKEN(operator_t, OP_MUL) || IS_TOKEN(operator_t, OP_DIV)) {
 
@@ -177,7 +178,7 @@ static diff_tree_element * get_mul_or_div(token_array * parsed_program) {
 
         PRINT_REPORT("in get_mul_or_div, call get_pow:");
 
-        diff_tree_element * value2 = get_pow(parsed_program);
+        diff_tree_element * value2 = get_sqrt(parsed_program);
 
         switch (op) {
 
