@@ -24,11 +24,28 @@ static bool check_symbol(char symbol, FILE * pfile);
 static int put_name_to_table(char name[]);
 static void set_type_value(diff_tree_element * element, double number, types_of_node type);
 
+const int LABELS_QUANTITY = 10;
+int labels_global[LABELS_QUANTITY] = {};
+
 variables_info variables_table;
 
-int LABEL_NUMBER = 0;
 
-void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_element * funcs[]) {
+static int take_free_label(int labels[], int number_of_taken_label) {
+    labels[number_of_taken_label] = 1;
+}
+
+static int get_free_label(int labels[]) {
+    for (int i = 0; i < LABELS_QUANTITY; i++) {
+        if (labels[i] == 0) {
+            labels[i] = 1;
+            return i;
+        }
+    }
+    printf("out of range of labels!!!\n");
+    return 999;
+}
+
+void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_element * funcs[], int labels[]) {
 
     if (element == NULL) {
         return;
@@ -36,8 +53,8 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
     if (ELEM_OP_ARG == 2) {
 
-        print_single_command(element->left, pfile, funcs);
-        print_single_command(element->right, pfile, funcs);
+        print_single_command(element->left, pfile, funcs, labels);
+        print_single_command(element->right, pfile, funcs, labels);
 
         switch (ELEM_OP_NUM) {
 
@@ -64,7 +81,7 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
     } else if (ELEM_OP_ARG == 1) {
 
-        print_single_command(element->right, pfile, funcs);
+        print_single_command(element->right, pfile, funcs, labels);
 
         switch (ELEM_OP_NUM) {
 
@@ -111,36 +128,35 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
             if (ELEM_OP_NUM == OP_END) {
 
-                print_single_command(element->left, pfile, funcs);
-                print_single_command(element->right, pfile, funcs);
+                print_single_command(element->left, pfile, funcs, labels);
+                print_single_command(element->right, pfile, funcs, labels);
 
             } else if (ELEM_OP_NUM == OP_EQUAL) {
 
-                print_single_command(element->right, pfile, funcs);
-                print_single_command(element->left, pfile, funcs);
+                print_single_command(element->right, pfile, funcs, labels);
+                print_single_command(element->left, pfile, funcs, labels);
                 
             } else if (ELEM_OP_NUM == OP_WHILE) {
 
-                int begin = LABEL_NUMBER;
+                int begin = get_free_label(labels);
+                int end = get_free_label(labels);
                 fprintf(pfile, ":%d\n", begin);
-
-                LABEL_NUMBER++;
                 
-                print_single_command(element->left->left, pfile, funcs);
-                print_single_command(element->left->right, pfile, funcs);
+                print_single_command(element->left->left, pfile, funcs, labels);
+                print_single_command(element->left->right, pfile, funcs, labels);
 
                 switch (element->left->value.operator_info.op_number) {
                 
                 case OP_EQUAL:
-                    fprintf(pfile, "jne :%d\n", LABEL_NUMBER); // are changed to opposite commands,
+                    fprintf(pfile, "jne :%d\n", end); // are changed to opposite commands,
                     break;                                     // because jump happens in opposite case
 
                 case OP_MORE:
-                    fprintf(pfile, "jbe :%d\n", LABEL_NUMBER);
+                    fprintf(pfile, "jbe :%d\n", end);
                     break;
 
                 case OP_LESS:
-                    fprintf(pfile, "jae :%d\n", LABEL_NUMBER);
+                    fprintf(pfile, "jae :%d\n", end);
                     break;
                 
                 default:
@@ -148,30 +164,31 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                     break;
                 }
 
-                print_single_command(element->right, pfile, funcs);
+                print_single_command(element->right, pfile, funcs, labels);
 
                 fprintf(pfile, "jmp :%d\n", begin);
 
-                fprintf(pfile, ":%d\n", LABEL_NUMBER);
-                LABEL_NUMBER++;
+                fprintf(pfile, ":%d\n", get_free_label(labels));
                 
             } else if (ELEM_OP_NUM == OP_IF ){
                 
-                print_single_command(element->left->left, pfile, funcs);
-                print_single_command(element->left->right, pfile, funcs);
+                print_single_command(element->left->left, pfile, funcs, labels);
+                print_single_command(element->left->right, pfile, funcs, labels);
+
+                int end = get_free_label(labels);
 
                 switch (element->left->value.operator_info.op_number) {
                 
                 case OP_EQUAL:
-                    fprintf(pfile, "jne :%d\n", LABEL_NUMBER); // are changed to opposite commands,
+                    fprintf(pfile, "jne :%d\n", end); // are changed to opposite commands,
                     break;                                     // because jump happens in opposite case
 
                 case OP_MORE:
-                    fprintf(pfile, "jbe :%d\n", LABEL_NUMBER);
+                    fprintf(pfile, "jbe :%d\n", end);
                     break;
 
                 case OP_LESS:
-                    fprintf(pfile, "jae :%d\n", LABEL_NUMBER);
+                    fprintf(pfile, "jae :%d\n", end);
                     break;
                 
                 default:
@@ -179,14 +196,13 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                     break;
                 }
 
-                print_single_command(element->right, pfile, funcs);
+                print_single_command(element->right, pfile, funcs, labels);
 
-                fprintf(pfile, ":%d\n", LABEL_NUMBER);
-                LABEL_NUMBER++;
+                fprintf(pfile, ":%d\n", end);
                 
             } else if (ELEM_OP_NUM == OP_PRINT) {
 
-                print_single_command(element->right, pfile, funcs);
+                print_single_command(element->right, pfile, funcs, labels);
                 fprintf(pfile, "out\n");
 
             } else if (ELEM_OP_NUM == OP_RET) {
@@ -207,18 +223,21 @@ void print_asm_code(diff_tree_element * element) {
         printf("null ptr pfile");
         return;
     }
+
     const int FUNCS_QUANTITY = 20;
+    const int LABELS_QUANTITY = 10;
 
     diff_tree_element * funcs[FUNCS_QUANTITY] = {};            // magic const
+    int * labels = labels_global;
 
-    print_single_command(element, pfile, funcs);
+    print_single_command(element, pfile, funcs, labels);
 
     fprintf(pfile, "hlt\n");
 
     for (int i = 0; i < FUNCS_QUANTITY; i++) {
         if (funcs[i] != NULL) {
             fprintf(pfile, "\n\n\n:%d\n", i);
-            print_single_command(funcs[i], pfile, funcs);
+            print_single_command(funcs[i], pfile, funcs, labels);
             fprintf(pfile, "ret\n\n\n\n");
         }
     }
@@ -328,6 +347,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
                 fscanf(in_file, "%[^_(]s", &op);
                 int num = put_name_to_table(op);
                 set_type_value(*element, num, function_t);
+                take_free_label(labels_global, num);
 
             } else {
                 
