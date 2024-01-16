@@ -31,6 +31,7 @@ op_names_numbers_t op_names_numbers[OP_COUNT] = {
         {OP_FUNC,     "$",       0},
         {OP_PRINT,"print",       0},
         {OP_RET,    "ret",       0},
+        {OP_NEQUAL,   "!",       0},
 };
 
 int is_one_char_symbol(char name) {

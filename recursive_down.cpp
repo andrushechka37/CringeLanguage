@@ -265,6 +265,9 @@ diff_tree_element * get_expression(token_array * parsed_program) {
             case OP_EQUAL:
                 CREATE_EXPRESSION_NODE(EQUAL(value, right));
 
+            case OP_NEQUAL:
+                CREATE_EXPRESSION_NODE(NEQUAL(value, right));
+
             default:
                 PRINT_REPORT("# trouble in get expression");
                 break;

@@ -142,8 +142,7 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                 int end = get_free_label(labels);
                 fprintf(pfile, ":%d\n", begin);
                 
-                print_single_command(element->left->left, pfile, funcs, labels);
-                print_single_command(element->left->right, pfile, funcs, labels);
+                print_single_command(element->left, pfile, funcs, labels);
 
                 switch (element->left->value.operator_info.op_number) {
                 
@@ -157,6 +156,10 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
                 case OP_LESS:
                     fprintf(pfile, "jae :%d\n", end);
+                    break;
+                
+                case OP_NEQUAL:
+                    fprintf(pfile, "je :%d\n", end);
                     break;
                 
                 default:
@@ -171,11 +174,11 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                 fprintf(pfile, ":%d\n", get_free_label(labels));
                 
             } else if (ELEM_OP_NUM == OP_IF ){
+
+                int end = get_free_label(labels);
                 
                 print_single_command(element->left->left, pfile, funcs, labels);
                 print_single_command(element->left->right, pfile, funcs, labels);
-
-                int end = get_free_label(labels);
 
                 switch (element->left->value.operator_info.op_number) {
                 
@@ -189,6 +192,10 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
                 case OP_LESS:
                     fprintf(pfile, "jae :%d\n", end);
+                    break;
+
+                case OP_NEQUAL:
+                    fprintf(pfile, "je :%d\n", end);
                     break;
                 
                 default:

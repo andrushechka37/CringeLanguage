@@ -310,7 +310,7 @@ element_info * parse_str_lexically(size_t len) {
             ip++;
             continue;
 
-        } else if (isdigit(cur_char) != 0) {                   
+        } else if (isdigit(cur_char) != 0 || ((cur_char == '-') && isdigit(program[ip + 1]))) {                   
                                  
             create_token(value_t, get_number(&ip), "number");        
                                                            
@@ -318,6 +318,7 @@ element_info * parse_str_lexically(size_t len) {
 
             char op[OP_NAME_LEN] = "";      // for operators consisted of letters, variables and functions
             get_word(&ip, op);
+
                 
             if (is_func_name(op) != -1) {
 
@@ -347,7 +348,7 @@ element_info * parse_str_lexically(size_t len) {
 
             if (IS_PARSED_TOKEN(syntax_t, OP_FIG_C)) {
                 if (brackets[brackets_ip] == 1) {
-                    printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
+                    //printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
                     size++;
                     create_token(zero_t, -1, "end of func");
                 }
@@ -365,7 +366,7 @@ element_info * parse_str_lexically(size_t len) {
             }
         }
 
-        printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
+        //printf("%d   ,%d-type %lg-value,     %s\n", size, parsed_program[size].type, parsed_program[size].number, parsed_program[size].name);
         size++;
     }
 

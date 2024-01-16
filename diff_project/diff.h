@@ -20,6 +20,10 @@
 #define EQUAL(left, right) node_ctor(OP_EQUAL, syntax_t, left, right, NULL);
 
 
+
+#define NEQUAL(left, right) node_ctor(OP_NEQUAL, syntax_t, left, right, NULL);
+
+
 #define SIN(arg) node_ctor(OP_SIN, operator_t, NULL, arg, NULL)
 #define COS(arg) node_ctor(OP_COS, operator_t, NULL, arg, NULL)
 
