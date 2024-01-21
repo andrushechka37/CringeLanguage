@@ -15,10 +15,6 @@
 // TODO: copypast of funcs of frontend, make file with common funcs
 // TODO: i don't like build tree function
 
-// in back = was in if and there is pop instead of push !!!!!!!!! while toooo
-// метки пересекаются  от ифов и функций
-
-// ОЧЕНЬ ВАЖНО ПРОВЕРИТЬ ПЕРЕСЕЧЕНИЕ МЕТОК
 
 static bool check_symbol(char symbol, FILE * pfile);
 static int put_name_to_table(char name[]);
@@ -35,15 +31,35 @@ static int take_free_label(int labels[], int number_of_taken_label) {
 }
 
 static int get_free_label(int labels[]) {
+
+
     for (int i = 0; i < LABELS_QUANTITY; i++) {
+
         if (labels[i] == 0) {
             labels[i] = 1;
             return i;
         }
     }
+
     printf("out of range of labels!!!\n");
     return 999;
 }
+
+#define ARG_CASES(arg, text)        \
+    case arg:                       \
+        fprintf(pfile, text);       \
+        break;
+
+#define END_OF_SWITCH                                      \
+    default:                                               \
+        printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);  \
+        break;
+
+
+#define IF_CASES(arg, text)        \
+    case arg:                      \
+        fprintf(pfile, text, end); \
+        break;
 
 void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_element * funcs[], int labels[]) {
 
@@ -58,25 +74,12 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
         switch (ELEM_OP_NUM) {
 
-            case OP_ADD:
-                fprintf(pfile, "add\n");
-                break;
+            ARG_CASES(OP_ADD, "add\n");
+            ARG_CASES(OP_SUB, "sub\n");
+            ARG_CASES(OP_MUL, "mul\n");
+            ARG_CASES(OP_DIV, "div\n");
 
-            case OP_SUB:
-                fprintf(pfile, "sub\n");
-                break;
-
-            case OP_MUL:
-                fprintf(pfile, "mul\n");
-                break;
-            
-            case OP_DIV:
-                fprintf(pfile, "div\n");
-                break;
-            
-            default:
-                printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);
-                break;
+            END_OF_SWITCH;
         }
 
     } else if (ELEM_OP_ARG == 1) {
@@ -85,22 +88,12 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
         switch (ELEM_OP_NUM) {
 
-            case OP_SIN:
-                fprintf(pfile, "sin\n");
-                break;
-
-            case OP_COS:
-                fprintf(pfile, "cos\n");
-                break;
-
-            case OP_SQRT:
-                fprintf(pfile, "sqrt\n"); // is not working in recursive down, remove pow instead of sqrt
-                break;
+            ARG_CASES(OP_SIN, "sin\n");
+            ARG_CASES(OP_COS, "cos\n");
+            ARG_CASES(OP_SQRT, "sqrt\n");
             
-            default:
-                printf("unknown arg - %d!!!!!!!\n", ELEM_OP_NUM);
-                break;
-            }
+            END_OF_SWITCH;
+        }
 
     } else {
         
@@ -110,7 +103,9 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
         } else if (ELEM_TYPE == variable_t) {
 
-            if (IS_ELEM(element->parent, syntax_t, OP_EQUAL) & !IS_ELEM(element->parent->parent, syntax_t, OP_IF)) {
+            if (IS_ELEM(element->parent, syntax_t, OP_EQUAL) & !IS_ELEM(element->parent->parent, syntax_t, OP_IF)
+                                                             & !IS_ELEM(element->parent->parent, syntax_t, OP_WHILE)) {
+
                 fprintf(pfile, "pop r%cx\n", (int)ELEM_DOUBLE + 'a');
             } else {
                 fprintf(pfile, "push r%cx\n", (int)ELEM_DOUBLE + 'a'); // pop or push think
@@ -140,28 +135,18 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
                 int begin = get_free_label(labels);
                 int end = get_free_label(labels);
+
                 fprintf(pfile, ":%d\n", begin);
                 
                 print_single_command(element->left, pfile, funcs, labels);
 
                 switch (element->left->value.operator_info.op_number) {
-                
-                case OP_EQUAL:
-                    fprintf(pfile, "jne :%d\n", end); // are changed to opposite commands,
-                    break;                                     // because jump happens in opposite case
 
-                case OP_MORE:
-                    fprintf(pfile, "jbe :%d\n", end);
-                    break;
+                IF_CASES(OP_EQUAL, "jne :%d\n");    // are changed to opposite commands,
+                IF_CASES(OP_MORE,  "jbe :%d\n");    // because jump happens in opposite case
+                IF_CASES(OP_LESS,  "jae :%d\n"); 
+                IF_CASES(OP_NEQUAL, "je :%d\n"); 
 
-                case OP_LESS:
-                    fprintf(pfile, "jae :%d\n", end);
-                    break;
-                
-                case OP_NEQUAL:
-                    fprintf(pfile, "je :%d\n", end);
-                    break;
-                
                 default:
                     printf("unknown arg - %d, 985698!!!!!!!\n", element->left->value.operator_info.op_number);
                     break;
@@ -170,7 +155,6 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                 print_single_command(element->right, pfile, funcs, labels);
 
                 fprintf(pfile, "jmp :%d\n", begin);
-
                 fprintf(pfile, ":%d\n", get_free_label(labels));
                 
             } else if (ELEM_OP_NUM == OP_IF ){
@@ -181,22 +165,11 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                 print_single_command(element->left->right, pfile, funcs, labels);
 
                 switch (element->left->value.operator_info.op_number) {
-                
-                case OP_EQUAL:
-                    fprintf(pfile, "jne :%d\n", end); // are changed to opposite commands,
-                    break;                                     // because jump happens in opposite case
 
-                case OP_MORE:
-                    fprintf(pfile, "jbe :%d\n", end);
-                    break;
-
-                case OP_LESS:
-                    fprintf(pfile, "jae :%d\n", end);
-                    break;
-
-                case OP_NEQUAL:
-                    fprintf(pfile, "je :%d\n", end);
-                    break;
+                IF_CASES(OP_EQUAL, "jne :%d\n");    // are changed to opposite commands,
+                IF_CASES(OP_MORE,  "jbe :%d\n");    // because jump happens in opposite case
+                IF_CASES(OP_LESS,  "jae :%d\n"); 
+                IF_CASES(OP_NEQUAL, "je :%d\n"); 
                 
                 default:
                     printf("unknown arg - %d, 985698!!!!!!!\n", element->left->value.operator_info.op_number);
@@ -217,7 +190,7 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
                 fprintf(pfile, "ret\n");
 
             } else {
-                printf("dfkjvhjkdfhkjhdfkj");
+                printf("unknown arg in print single command\n");
             }
         }
     }
@@ -234,7 +207,7 @@ void print_asm_code(diff_tree_element * element) {
     const int FUNCS_QUANTITY = 20;
     const int LABELS_QUANTITY = 10;
 
-    diff_tree_element * funcs[FUNCS_QUANTITY] = {};            // magic const
+    diff_tree_element * funcs[FUNCS_QUANTITY] = {};
     int * labels = labels_global;
 
     print_single_command(element, pfile, funcs, labels);
@@ -339,15 +312,15 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
         build_tree(LEFT, in_file, element);
 
-        double value = 0;                  // error obrabotka
-        char op[OP_NAME_LEN] = {};
-        char x = '0';
+        double value = 0;                 
 
         if (fscanf(in_file, "%lf", &value) == 1) {
 
             set_type_value(*element, value, value_t);
 
         } else {
+
+            char op[OP_NAME_LEN] = {};
 
             if (check_symbol('$', in_file) == 1) {  // skip $ if it is
             
