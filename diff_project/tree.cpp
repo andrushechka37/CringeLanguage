@@ -9,6 +9,7 @@
 static bool check_symbol(char symbol, FILE * pfile);
 static int set_type_and_value(double value, types_of_node type, diff_tree_element * element);
 
+// TODO: This are lexems, not operators
 op_names_numbers_t op_names_numbers[OP_COUNT] = {
         {OP_ADD,      "+",       2},
         {OP_SUB,      "-",       2},

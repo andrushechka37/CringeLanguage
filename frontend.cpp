@@ -89,7 +89,21 @@ int print_inorder_program(diff_tree_element * element) {
 
 int main(void) {
 
+    // TODO: Why name very generic function that works on _any_ file read_program
     size_t len = read_program();
+    // TODO: Also, probably shouldn't hide something as important as _main_ file
+    //       name from the main by using default arguments, just write it explicitly.
+
+    // cmdline_args args {};
+    // parse_cmdline_args(&args, argv, argc);
+    //
+    // char* output_file =
+    //     array_get_or_default(args.plain, 0, "my_default_selection.andrushechka34");
+    // read_program(output_file);
+    //
+    // read_program(argv[1] ?: "my_default_selection.andrushechka34");
+
+    // TODO: HOW CAN IT BE "PARSED" if it's stored in _TOKEN_ array
     token_array parsed_program = {};
     variables_table.size = 0;
     
