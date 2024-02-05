@@ -17,8 +17,13 @@
 // TODO: end of funcs is are separated from the main (zero_t is putted in two places
 // TODO: names of operators should not be in token
 
-// TODO: REWRITE SCANF OF STR PARSE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -1-2-3---4-4-4
+// TODO: REWRITE SCANF OF STR PARSE   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -1-2-3---4-4-4
 // в лексическом анализаторе не оч красиво это написано- переписать
+
+// убрать нейм
+// сделать норм считывание
+
+// передача имени файла
 
 static int get_size_of_file(FILE * file);
 
@@ -46,21 +51,24 @@ void print_inorder(diff_tree_element * element, FILE * in_file) {
     fprintf(in_file, "(");
     print_inorder(element->left, in_file);
 
-    if (ELEM_TYPE == value_t) {
+    switch (ELEM_TYPE) {
 
-        fprintf(in_file,"%lg", element->value);
+        case value_t:
+            fprintf(in_file,"%lg", element->value);
+            break;
 
-    } else if (ELEM_TYPE == variable_t) {
+        case variable_t:
+            printf("%d\n", (int)element->value.number);
+            fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
+            break;
 
-        printf("%d\n", (int)element->value.number);
-        fprintf(in_file, "%s", variables_table.table[(int)element->value.number].name);
-
-    } else if (ELEM_TYPE == function_t) {
-
-        fprintf(in_file, "$%s", variables_table.table[(int)element->value.number].name);
-
-    } else {
-        fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
+        case function_t:
+            fprintf(in_file, "$%s", variables_table.table[(int)element->value.number].name);
+            break;
+    
+        default:
+            fprintf(in_file, "%s", get_op_symbol(ELEM_OP_NUM));
+            break;
     }
         
     print_inorder(element->right, in_file);
@@ -99,7 +107,7 @@ int main(void) {
     tree_visualize(tree);
     tree_visualize(tree);
 
-    print_to_file_c_program(tree);
+    //print_to_file_c_program(tree);
 
     print_inorder_program(tree);
 
@@ -317,9 +325,9 @@ element_info * parse_str_lexically(size_t len) {
         } else if (isalpha(cur_char) != 0) { // non letters are restricted
 
             char op[OP_NAME_LEN] = "";      // for operators consisted of letters, variables and functions
-            get_word(&ip, op);
+get_word(&ip, op);
 
-                
+            
             if (is_func_name(op) != -1) {
 
                 create_right_token(is_func_name(op), op);
@@ -342,7 +350,7 @@ element_info * parse_str_lexically(size_t len) {
         } else {
 
             char op[2] = ""; // for non letters operators or brackets
-            op[0] = cur_char;
+op[0] = cur_char;
             create_right_token(is_one_char_symbol(cur_char), op);
             ip++;
 
