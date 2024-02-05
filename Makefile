@@ -14,8 +14,11 @@ CXXFLAGS =  -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-
 
 
 
+# TODO: This is useful
 akinator: tree.o deff_dump.o diff.o recursive_down.o frontend.o
 	clang++ tree.o deff_dump.o diff.o recursive_down.o frontend.o $(CXXFLAGS) -o deff && ./deff
+# TODO: make separate compile task
+
 deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tree.h
 	clang++ -c diff_project/deff_dump.cpp
 
@@ -38,3 +41,6 @@ backend.o: backend.cpp
 	clang++ -c backend.cpp
 deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tree.h
 	clang++ -c diff_project/deff_dump.cpp
+
+
+# TODO: Put some effort in your makefile

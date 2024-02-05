@@ -55,6 +55,7 @@ union node_value {
     double number;
 };
 
+// TODO: Don't use conventions in the way the are not intended, I'm talking about _t
 enum types_of_node {
     zero_t     = -1,
     value_t    = 1,
