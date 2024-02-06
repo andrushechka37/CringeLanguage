@@ -13,9 +13,9 @@ void print_tree_inorder(diff_tree_element * root) {
     }
     printf("(");
     print_tree_inorder(root->left);
-    if (root->type == value_t) {
+    if (root->type == value_class) {
         printf("%.2lf", root->value);
-    } else if ((int)root->type == operator_t) {
+    } else if ((int)root->type == operator_class) {
         //printf("%c", get_op_symbol(root->value));
     }
     
@@ -44,27 +44,27 @@ static void print_graph_node(diff_tree_element * element, FILE * pfile, int rank
                    element, rank, element->parent, element, element->value, 
                  element->type, element->left, element->right);
     } else {                                         // ifndef
-        if (element->type == value_t) {
+        if (element->type == value_class) {
 
             fprintf(pfile, "\t%d[shape=Mrecord,style=filled, fillcolor=\"#7293ba\", rank = %d," 
                    "label=\"%.2lf\"];\n", element, rank, element->value.number);  //obertka // for me it easier without it
 
-        } else if (element->type == operator_t) {
+        } else if (element->type == operator_class) {
 
             fprintf(pfile, "\t%d[shape=circle,style=filled, fillcolor=\"#b481f7\", rank = %d," 
                    "label=\"%s\"];\n", element, rank, get_op_symbol(element->value.operator_info.op_number));
 
-        } else if (element->type == variable_t) {
+        } else if (element->type == variable_class) {
 
             fprintf(pfile, "\t%d[shape=circle,style=filled, fillcolor=\"#f0ab67\", rank = %d," 
                    "label=\"x\"];\n", element, rank);
 
-        } else if (element->type == syntax_t) {
+        } else if (element->type == syntax_class) {
 
             fprintf(pfile, "\t%d[shape=circle,style=filled, fillcolor=\"#9487fa\", rank = %d," 
                    "label=\"%s\"];\n", element, rank, get_op_symbol(element->value.operator_info.op_number));
 
-        } else if (element->type == function_t) {
+        } else if (element->type == function_class) {
 
             fprintf(pfile, "\t%d[shape=circle,style=filled, fillcolor=\"#ed64dd\", rank = %d," 
                    "label=\"F - %lg\"];\n", element, rank, element->value.number);

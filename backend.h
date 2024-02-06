@@ -3,9 +3,9 @@
 
 #define SET_RIGHT_TYPE_VALUE(func)                    \
     if (func >= OP_FIG_C) {                           \
-        set_type_value(*element, func, syntax_t);     \
+        set_type_value(*element, func, syntax_class);     \
     } else {                                          \
-        set_type_value(*element, func, operator_t);   \
+        set_type_value(*element, func, operator_class);   \
     }
 
 diff_tree_element * read_tree();

@@ -3,7 +3,7 @@
 #include "frontend.h"
 
 
-diff_tree_element * get_program(token_array * parsed_program, FILE * file);
+diff_tree_element * get_program(tokens * parsed_program, FILE * file);
 
 #define print_log(text, spec) fprintf(plog, text, spec)
 
@@ -21,7 +21,7 @@ diff_tree_element * get_program(token_array * parsed_program, FILE * file);
     PRINT_CUR_SIT;
 
 #define CHECK_BRACKET(name)                                        \
-    if (IS_TOKEN(syntax_t, name)) {                                \
+    if (IS_TOKEN(syntax_class, name)) {                                \
         token_num++;                                               \
     } else {                                                       \
         fprintf(plog, "%s %d-line", __FUNCTION__, __LINE__);       \

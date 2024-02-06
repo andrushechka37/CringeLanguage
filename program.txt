@@ -1,0 +1,67 @@
+{
+    a = 1;
+    b = 3;
+    c = 1;
+    d = 0;
+
+    $discriminant;
+
+    $answer;
+
+    $discriminant {
+        d = b * b - 4 * a * c;
+    };
+
+    $answer {
+        {
+            if (a = 0;) 
+
+            {
+                if (b ! 0;)
+                x = -1 * b / c;
+                print(x);
+                ret;
+            }
+
+            {
+                if (b = 0;) 
+
+                {
+                    if (c = 0;)
+                    print(9999);
+                    ret;
+                }
+            }
+
+            {print(-1111);
+
+            ret;}
+        }
+
+    
+
+        {
+            if (d > 0;)
+
+            x = (-1 * b + sqrt(d)) / (2*a);
+            y = (-1 * b - sqrt(d)) / (2*a);
+
+            print(x);
+            print(y);
+            ret;
+        }
+
+        {
+            if (d = 0;)
+            x = -1 * b / (2*a);
+            print(x);
+            ret;
+        }
+
+        {
+            if (d < 0;)
+            print(-1111);
+            ret;
+        }
+    };
+}

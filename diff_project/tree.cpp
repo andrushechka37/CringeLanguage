@@ -9,8 +9,8 @@
 static bool check_symbol(char symbol, FILE * pfile);
 static int set_type_and_value(double value, types_of_node type, diff_tree_element * element);
 
-// TODO: This are lexems, not operators
-op_names_numbers_t op_names_numbers[OP_COUNT] = {
+// TODO(DONE): This are lexems, not operators
+lexem_names_numbers_class lexems_names_numbers[OP_COUNT] = {
         {OP_ADD,      "+",       2},
         {OP_SUB,      "-",       2},
         {OP_MUL,      "*",       2},
@@ -37,24 +37,24 @@ op_names_numbers_t op_names_numbers[OP_COUNT] = {
 
 int is_one_char_symbol(char name) {
     int i = 0;
-    while (name != op_names_numbers[i].name[0]) {
+    while (name != lexems_names_numbers[i].name[0]) {
         i++;
         if (i > OP_COUNT) {
             return 0;
         }
     }
-    return op_names_numbers[i].number;
+    return lexems_names_numbers[i].number;
 }
 
 int is_func_name(char name[]) { // do it faster with hashes instead of strcmp
     int i = 0;
-    while (strcmp(op_names_numbers[i].name, name)) {
+    while (strcmp(lexems_names_numbers[i].name, name)) {
         i++;
         if (i > FUNCS_COUNT) {
             return -1;
         }
     }
-    return op_names_numbers[i].number;
+    return lexems_names_numbers[i].number;
 }
 
 diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_element * left,
@@ -64,23 +64,23 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
     element->type = type;
 
     switch (type) {
-        case value_t:
+        case value_class:
             ELEM_DOUBLE = value;
             break;
 
-        case operator_t:
+        case operator_class:
             ELEM_OP_NUM = (operations) value;
             element->value.operator_info.arg_quantity = get_op_arg_number((operations) value);
             break;
 
-        case syntax_t:
+        case syntax_class:
             ELEM_OP_NUM = (operations) value;
             break;
         
-        case variable_t:
+        case variable_class:
             ELEM_DOUBLE = value;
             break;
-        case function_t:
+        case function_class:
             ELEM_DOUBLE = value;
             break;
     }
@@ -96,8 +96,8 @@ diff_tree_element * node_ctor(double value, types_of_node type, diff_tree_elemen
 
 const char * get_op_symbol(int op_num) { 
     int i = 0;
-    while (op_num != op_names_numbers[i].number) i++;      // switch case
-    return op_names_numbers[i].name;
+    while (op_num != lexems_names_numbers[i].number) i++;      // switch case
+    return lexems_names_numbers[i].name;
 }
 
 
@@ -111,13 +111,13 @@ int tree_verify(diff_tree_element * element) {
     tree_verify(element->left);
 
     switch (element->type) {
-    case value_t:
+    case value_class:
         if (element->left != NULL || element->right != NULL) {   // if number node has left and right NULL children
             printf("%p number does not have all nulls", element);
             error_status = 1;
         }
         break;
-    case operator_t:
+    case operator_class:
         if (ELEM_OP_ARG == 1) { // if operator has one argument
             if (element->left != NULL || element->right == NULL) {
                 printf("%p op does not have all numbers 1", element);
@@ -177,10 +177,10 @@ void tree_dtor(elem_ptr * root) {
 }
 
 double tree_eval(diff_tree_element * element, double x_value) {
-    if (element->type == value_t) {
+    if (element->type == value_class) {
         return element->value.number;
     }
-    if (element->type == variable_t) {
+    if (element->type == variable_class) {
         return x_value;
     }
 
@@ -222,20 +222,20 @@ double tree_eval(diff_tree_element * element, double x_value) {
 
 int get_op_arg_number(operations op) {
     int i = 0;
-    while (op != op_names_numbers[i].number) {
+    while (op != lexems_names_numbers[i].number) {
         if (i > FUNCS_COUNT) {
             return -1;
         }
         i++;
     }
-    return op_names_numbers[i].arg_quantity;
+    return lexems_names_numbers[i].arg_quantity;
 }
 
 static int set_type_and_value(double value, types_of_node type, diff_tree_element * element) { // null ptr check
     IS_NULL_PTR(element);
-    if (type == value_t) {
+    if (type == value_class) {
         element->value.number = value;
-    } else if (type == operator_t) {
+    } else if (type == operator_class) {
         ELEM_OP_NUM = (operations)value;
         ELEM_OP_ARG = get_op_arg_number((operations)value);
 

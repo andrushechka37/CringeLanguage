@@ -1,5 +1,5 @@
 # Example of usage of language:
-## Recusrsive factorial of 5:
+## Recursive factorial of 5:
 ```
 {
     x = 5;

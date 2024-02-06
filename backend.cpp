@@ -97,21 +97,21 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
 
     } else {
         
-        if (ELEM_TYPE == value_t) {
+        if (ELEM_TYPE == value_class) {
 
             fprintf(pfile, "push %d\n", (int)ELEM_DOUBLE);
 
-        } else if (ELEM_TYPE == variable_t) {
+        } else if (ELEM_TYPE == variable_class) {
 
-            if (IS_ELEM(element->parent, syntax_t, OP_EQUAL) & !IS_ELEM(element->parent->parent, syntax_t, OP_IF)
-                                                             & !IS_ELEM(element->parent->parent, syntax_t, OP_WHILE)) {
+            if (IS_ELEM(element->parent, syntax_class, OP_EQUAL) & !IS_ELEM(element->parent->parent, syntax_class, OP_IF)
+                                                             & !IS_ELEM(element->parent->parent, syntax_class, OP_WHILE)) {
 
                 fprintf(pfile, "pop r%cx\n", (int)ELEM_DOUBLE + 'a');
             } else {
                 fprintf(pfile, "push r%cx\n", (int)ELEM_DOUBLE + 'a'); // pop or push think
             }
 
-        } else if (ELEM_TYPE == function_t) {
+        } else if (ELEM_TYPE == function_class) {
 
             if (element->right == NULL) {
                 fprintf(pfile, "call :%lg\n", element->value.number);
@@ -278,7 +278,7 @@ static int put_name_to_table(char name[]) {
 
     VAR_NUM++;
     
-    if (VAR_NUM > VARIABLE_COUNT) {
+    if (VAR_NUM > SYMBOL_TABLE_MAX_CAPACITY) {
         printf("!!!!!!!!!!!!!!!!!!too much variables");
     }
     
@@ -308,7 +308,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
     if (check_symbol('(', in_file) == 1) {
 
-        *element = node_ctor(0, zero_t, NULL, NULL, *parent);
+        *element = node_ctor(0, zero_class, NULL, NULL, *parent);
 
         build_tree(LEFT, in_file, element);
 
@@ -316,7 +316,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
         if (fscanf(in_file, "%lf", &value) == 1) {
 
-            set_type_value(*element, value, value_t);
+            set_type_value(*element, value, value_class);
 
         } else {
 
@@ -326,7 +326,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
             
                 fscanf(in_file, "%[^_(]s", &op);
                 int num = put_name_to_table(op);
-                set_type_value(*element, num, function_t);
+                set_type_value(*element, num, function_class);
                 take_free_label(labels_global, num);
 
             } else {
@@ -341,7 +341,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
                     int num = put_name_to_table(op);
 
-                    set_type_value(*element, num, variable_t);
+                    set_type_value(*element, num, variable_class);
                 }
             }
         }
@@ -359,7 +359,7 @@ int build_tree(elem_ptr * element, FILE * in_file, elem_ptr * parent) {
 
 static void set_type_value(diff_tree_element * element, double number, types_of_node type) {
 
-    if (type == variable_t || type == value_t || type == function_t) {
+    if (type == variable_class || type == value_class || type == function_class) {
         element->value.number = number;
     } else {
         element->value.operator_info.op_number = (operations)number;

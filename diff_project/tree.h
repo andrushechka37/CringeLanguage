@@ -14,7 +14,7 @@ const int FUNCS_COUNT = 22;
 const int OP_PRIORITY_MASK = 240;
 const char NIL = '_';
 
-struct op_names_numbers_t {
+struct lexem_names_numbers_class {
     const double number;
     const char name[OP_NAME_LEN];
     const int arg_quantity;
@@ -55,14 +55,14 @@ union node_value {
     double number;
 };
 
-// TODO: Don't use conventions in the way the are not intended, I'm talking about _t
+// TODO(DONE): Don't use conventions in the way the are not intended, I'm talking about _t
 enum types_of_node {
-    zero_t     = -1,
-    value_t    = 1,
-    operator_t = 2,
-    variable_t = 3,
-    syntax_t   = 4,
-    function_t = 5
+    zero_class     = -1,
+    value_class    =  1,
+    operator_class =  2,
+    variable_class =  3,
+    syntax_class   =  4,
+    function_class =  5
 };
 
 struct diff_tree_element {
@@ -114,8 +114,8 @@ typedef diff_tree_element* elem_ptr;
 
 
 #define IS_ROUND_BRACKET                                          \
-    (element->type == operator_t) &&                              \
-    (element->parent->type == operator_t) &&                      \
+    (element->type == operator_class) &&                              \
+    (element->parent->type == operator_class) &&                      \
     (op_priority(element->value.operator_info.op_number,          \
     element->parent->value.operator_info.op_number) == 1)         \
 

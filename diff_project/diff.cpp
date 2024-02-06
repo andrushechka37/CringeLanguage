@@ -11,9 +11,9 @@ static bool is_change = 1;
 
 
 diff_tree_element * tree_diff(diff_tree_element * element) {
-    if (element->type == value_t) {
+    if (element->type == value_class) {
         return NUMBER_NODE(0);
-    } else if (element->type == variable_t) {
+    } else if (element->type == variable_class) {
         return NUMBER_NODE(1);
     }
 
@@ -65,7 +65,7 @@ diff_tree_element * copy_node(diff_tree_element * element) {
     }
     diff_tree_element * left =  copy_node(element->left);
     diff_tree_element * right = copy_node(element->right);
-    if (element->type == operator_t) {
+    if (element->type == operator_class) {
         return node_ctor(ELEM_OP_NUM, (types_of_node)element->type,left, right, NULL);
     }
     return node_ctor(element->value.number, (types_of_node)element->type,left, right, NULL);
@@ -78,8 +78,8 @@ void consts_eval(diff_tree_element * element) {
     }
     consts_eval(element->left);
     consts_eval(element->right);
-    if (element->type == operator_t && ELEM_OP_ARG == 2) {
-        if (element->left->type == value_t && element->right->type == value_t) {
+    if (element->type == operator_class && ELEM_OP_ARG == 2) {
+        if (element->left->type == value_class && element->right->type == value_class) {
             double calc = tree_eval(element, 0);
             if (element->left != NULL) {
                 tree_dtor(&(element->left));
@@ -87,7 +87,7 @@ void consts_eval(diff_tree_element * element) {
             if (element->right != NULL) {
                 tree_dtor(&(element->right));
             }
-            element->type = value_t;
+            element->type = value_class;
             element->value.number = calc;
             is_change = 1;
         }
@@ -108,7 +108,7 @@ void single_node_dtor(elem_ptr * element) {
     if (RIGHT_CHILD != NULL) {
         RIGHT_CHILD = NULL;
     }
-    (*element)->type = zero_t; // enum 
+    (*element)->type = zero_class; // enum 
     (*element)->value.operator_info.arg_quantity = 0;
     (*element)->value.operator_info.op_number = (operations)0;
     (*element)->value.number = 0;
@@ -166,31 +166,31 @@ void delete_fictive_nodes(diff_tree_element * element) {
     }
     delete_fictive_nodes(element->left);
     delete_fictive_nodes(element->right);
-    if (element->type == operator_t) {
+    if (element->type == operator_class) {
         if (ELEM_OP_NUM == OP_MUL || ELEM_OP_NUM == OP_DIV) {   //*0  0/9989
-            if ((LEFT_NUMBER == 0  && LEFT_TYPE == value_t) || 
-                (RIGHT_NUMBER == 0 && RIGHT_TYPE == value_t)) {
+            if ((LEFT_NUMBER == 0  && LEFT_TYPE == value_class) || 
+                (RIGHT_NUMBER == 0 && RIGHT_TYPE == value_class)) {
                 tree_dtor(&(element->left));
                 tree_dtor(&(element->right));
-                element->type = value_t;
+                element->type = value_class;
                 element->value.number = 0;
                 is_change = 1;
                 return;
-            } else if (LEFT_NUMBER == 1 && LEFT_TYPE == value_t) { // switch   // *1
+            } else if (LEFT_NUMBER == 1 && LEFT_TYPE == value_class) { // switch   // *1
                 throw_away_node(element, 'L');
-            } else if (RIGHT_NUMBER == 1 && RIGHT_TYPE == value_t) {    // *1
+            } else if (RIGHT_NUMBER == 1 && RIGHT_TYPE == value_class) {    // *1
                 throw_away_node(element, 'R');
             }
         } else if (ELEM_OP_NUM == OP_ADD || ELEM_OP_NUM == OP_SUB) { // +- 0
-            if (LEFT_NUMBER == 0 && LEFT_TYPE == value_t) {
+            if (LEFT_NUMBER == 0 && LEFT_TYPE == value_class) {
                 throw_away_node(element, 'L');
-            } else if (RIGHT_NUMBER == 0 && RIGHT_TYPE == value_t) {
+            } else if (RIGHT_NUMBER == 0 && RIGHT_TYPE == value_class) {
                 throw_away_node(element, 'R');
             }
         } else if (ELEM_OP_NUM == OP_POW) {
-            if (LEFT_NUMBER == 1 && LEFT_TYPE == value_t) { // ^1
+            if (LEFT_NUMBER == 1 && LEFT_TYPE == value_class) { // ^1
                 throw_away_node(element, 'L');
-            } else if (RIGHT_NUMBER == 1 && RIGHT_TYPE == value_t) { //   ^1
+            } else if (RIGHT_NUMBER == 1 && RIGHT_TYPE == value_class) { //   ^1
                 throw_away_node(element, 'R');
             }
         }
