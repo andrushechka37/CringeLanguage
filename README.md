@@ -1,5 +1,6 @@
-# Example of usage of language:
-## Recursive factorial of 5:
+# Примеры использования языка:
+## Большая часть информации о проекте указана в [моем x86 бэкенде для этого языка](https://github.com/andrushechka37/Compiler)
+## Факториал 5:
 ```
 {
     x = 5;
@@ -18,13 +19,14 @@
         $factorial;
 
         x = x + 1;
-        answer = answer * x;}
+        answer = answer * x;
+        ret;}
     };
 }
 
 ```
 
-## Quadratic eqation:
+## Решение квадратного уравнения:
 ```
 {
     a = 1;
@@ -113,3 +115,53 @@
 ### get_variable := get_var | `get_number`
 ### get_number := get_number
 
+{
+    if (x = 1;)
+    $hui;
+
+    $hui {
+        x = 5;
+        ret;
+    };
+}
+
+
+{
+    x = 1;
+
+    {
+        while (x < 5;)
+        answer = answer + x;
+        x = x + 1;
+    }
+    print(answer);
+
+
+}
+
+работает
+{
+    x = 1;
+
+    {
+        while (x < 5;)
+        answer = answer + x;
+        x = x + 1;
+
+        {
+            if (x = 4;)
+            print(x);
+        }
+    }
+    print(answer);
+
+
+}
+
+
+{
+   x = 123;
+   y = 456;
+   print(x);
+   print(y);
+}

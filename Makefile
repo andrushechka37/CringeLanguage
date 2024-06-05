@@ -43,4 +43,7 @@ deff_dump.o: diff_project/deff_dump.cpp diff_project/deff_dump.h diff_project/tr
 	clang++ -c diff_project/deff_dump.cpp
 
 
+clean:
+	rm -rf *.o list_test get_data_storage tables/*.csv perf.data
+
 # TODO: Put some effort in your makefile

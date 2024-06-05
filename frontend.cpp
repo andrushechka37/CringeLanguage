@@ -89,7 +89,7 @@ int main(int argc, const char * argv[]) {
     fclose(file);
     set_parents(tree, tree);
 
-    tree_visualize(tree);
+    // tree_visualize(tree);
     tree_visualize(tree);
 
     //print_to_file_c_program(tree);
@@ -312,7 +312,7 @@ token_info * parse_str_lexically(size_t len) {
         } else if (isalpha(CUR_CHAR) != 0) { // non letters are restricted
 
             char op[OP_NAME_LEN] = "";      // for operators consisted of letters, variables and functions
-get_word(&index, op);
+            get_word(&index, op);
 
             
             if (is_func_name(op) != -1) {
@@ -321,6 +321,7 @@ get_word(&index, op);
                 
             } else {
 
+                // checks if there is $ symbol
                 if (token_array[size - 1].type == syntax_class && token_array[size - 1].number == OP_FUNC) {
 
                     int num = put_name_to_table(op);
@@ -351,6 +352,7 @@ get_word(&index, op);
             }
 
             if (IS_PARSED_TOKEN(syntax_class, OP_FIG_O)) {
+                
                 if (token_array[size - 1].type == function_class) {
                     brackets_ip++;
                     brackets[brackets_ip] = 1;

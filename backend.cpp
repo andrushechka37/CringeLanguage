@@ -196,6 +196,10 @@ void print_single_command(diff_tree_element * element, FILE * pfile, diff_tree_e
     }
 }
 
+#define print(str, ...) fprintf(pfile, str)
+// va_list
+// "%d djkjg", rt
+
 void print_asm_code(diff_tree_element * element) {
 
     FILE * pfile = fopen("asm.txt", "w");
@@ -215,7 +219,9 @@ void print_asm_code(diff_tree_element * element) {
     fprintf(pfile, "hlt\n");
 
     for (int i = 0; i < FUNCS_QUANTITY; i++) {
+
         if (funcs[i] != NULL) {
+            
             fprintf(pfile, "\n\n\n:%d\n", i);
             print_single_command(funcs[i], pfile, funcs, labels);
             fprintf(pfile, "ret\n\n\n\n");
